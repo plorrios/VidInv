@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "752906632774",
+    "firebase_url": "https://vidinv-8c068.firebaseio.com",
+    "project_id": "vidinv-8c068",
+    "storage_bucket": "vidinv-8c068.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752906632774:android:97fb412613708397715447",
+        "android_client_info": {
+          "package_name": "com.pabloor.vidinv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752906632774-gssodh1n1lioq8psggfij96leeo6t4hk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfWxMCxh427wua31CgGV9IDws0Xvt9iTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752906632774-gssodh1n1lioq8psggfij96leeo6t4hk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

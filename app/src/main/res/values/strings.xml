@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VidInv</string>
+    <string name="textfield_label">Juego</string>
 </resources>
