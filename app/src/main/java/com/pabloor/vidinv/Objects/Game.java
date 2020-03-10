@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 public class Game {
 
+    //añadir @SerializeName cuando nombre de variable sea distinto al nombre en el json
 
     private int id;
     @NonNull
