@@ -27,7 +27,7 @@ public class Game {
     @NonNull
     private Double rating;
     private int rating_top;
-    private Ratings ratings;
+    private Ratings[] ratings;
     private Reactions reactions;
     private int added;
     private AddedByStatus addedByStatus;
@@ -52,5 +52,7 @@ public class Game {
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
+
+    public String GetGameName(){return name;}
 
 }
