@@ -40,11 +40,10 @@ public class GamesActivity extends AppCompatActivity {
             task.execute();
         }
     }
-
     public void getGame(Game game){
-
-
+        textView.setText(game.GetGameName());
     }
+
 
     public boolean hasConectivity(){
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
@@ -52,9 +51,6 @@ public class GamesActivity extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
-    public void getQuote(Game game){
 
-        textView.setText(game.GetGameName());
-    }
 
 }
