@@ -2,4 +2,6 @@
     <string name="app_name">VidInv</string>
     <string name="game_name_example">Game name example</string>
     <string name="game_banner">Banner from the current game selected</string>
+    <string name="textfield_banner">Generic label</string>
+    <string name="item_list_content_desc">Item from a list</string>
 </resources>

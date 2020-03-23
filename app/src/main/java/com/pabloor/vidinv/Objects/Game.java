@@ -19,6 +19,8 @@ public class Game {
     private int metacritic;
     private String released;
     private boolean tba;
+
+
     private String updated;
     private String backgroundImage;
     private String backgroundImageAdditional;
@@ -52,6 +54,12 @@ public class Game {
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
+
+    public Game(int id, @NonNull String name, @NonNull String description) {
+        this.id = id;
+        this.name = name;
+        Description = description;
+    }
 
     public String GetGameName(){return name;}
 
