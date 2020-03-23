@@ -1,5 +1,23 @@
 <resources>
     <string name="app_name">VidInv</string>
-    <string name="game_name_example">Game name example</string>
+    <string name="game_title">Game name example</string>
     <string name="game_banner">Banner from the current game selected</string>
+    <string name="description_title">Description</string>
+    <string name="description_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
+        vitae mauris nulla. In volutpat lacus mi, eget imperdiet orci dictum quis. Suspendisse
+        facilisis malesuada commodo. Fusce ante tortor, maximus sit amet hendrerit quis, rutrum
+        vitae mauris. Mauris diam sem, imperdiet ac lorem non, interdum blandit magna. Suspendisse
+        ut velit nec neque viverra gravida eu vel eros. Fusce mauris diam, luctus sit amet tincidunt
+        non, dictum nec libero. Nam blandit mi vitae diam eleifend, eu tempus tellus fringilla.
+        Etiam ut purus purus. Integer imperdiet in lectus at viverra. Sed vitae urna quis odio
+        ullamcorper placerat. Aliquam elementum velit nec orci volutpat aliquet. Nulla quam risus,
+        iaculis ut tristique nec, dapibus eu dui.
+    </string>
+    <string name="details_title">Details</string>
+    <string name="studio_title">Game Studio</string>
+    <string name="studio_name">Game Studio example name</string>
+    <string name="release_title">Release date</string>
+    <string name="release_date">29/01/2019</string>
+    <string name="links_title">Communities</string>
+    <string name="textfield_label">text</string>
 </resources>
