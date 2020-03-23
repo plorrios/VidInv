@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">VidInv</string>
-    <string name="textfield_label">Juego</string>
+    <string name="game_name_example">Game name example</string>
+    <string name="game_banner">Banner from the current game selected</string>
 </resources>
