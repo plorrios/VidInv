@@ -35,9 +35,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listOfLists = new ArrayList<Game>();
-        listOfLists.add(new Game(0, "Prueba", "Generic"));
-        listOfLists.add(new Game(1, "Prueba 1", "Generic"));
-        listOfLists.add(new Game(2, "Prueba 2", "Generic"));
+
+        for (int i = 0; i < 50; i++) {
+            listOfLists.add(new Game(i, "Prueba " + i, "Generic"));
+        }
 
         gameListview = (ListView) findViewById(R.id.listLists);
         ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists);

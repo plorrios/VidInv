@@ -91,7 +91,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("game",game.GetGameName());
+        Log.d("game",game.getName());
         return game;}
 
     @Override

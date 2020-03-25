@@ -14,7 +14,7 @@ public class Game {
     @NonNull
     private String nameOriginal;
     @NonNull
-    private String Description;
+    private String description;
 
     private int metacritic;
     private String released;
@@ -58,9 +58,15 @@ public class Game {
     public Game(int id, @NonNull String name, @NonNull String description) {
         this.id = id;
         this.name = name;
-        Description = description;
+        this.description = description;
     }
 
-    public String GetGameName(){return name;}
+    @NonNull
+    public String getName() {
+        return name;
+    }
 
+    public int getId() {
+        return id;
+    }
 }

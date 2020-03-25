@@ -41,7 +41,7 @@ public class GamesActivity extends AppCompatActivity {
         }
     }
     public void getGame(Game game){
-        textView.setText(game.GetGameName());
+        textView.setText(game.getName());
     }
 
 
