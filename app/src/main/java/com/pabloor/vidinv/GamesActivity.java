@@ -25,13 +25,13 @@ public class GamesActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textViewprueba);
         final Button button = findViewById(R.id.buttonprueba);
-        button.setOnClickListener(new View.OnClickListener() {
+        /*button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 //startTask(v);
                 getGame(petitions.getGame());
             }
-        });
+        });*/
     }
 
     /*private void startTask(View v){

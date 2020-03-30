@@ -27,23 +27,25 @@ import javax.net.ssl.HttpsURLConnection;
 public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
     WeakReference<GamePageActivity> PetitionsWeakReference;
+    String busquedaLocal;
 
-    public GetGameThread(GamePageActivity activity){
+    public GetGameThread(GamePageActivity activity, String busqueda){
+        busquedaLocal = busqueda;
         this.PetitionsWeakReference = new WeakReference<GamePageActivity>(activity);
     }
 
     @Override
     protected Game doInBackground(Void... voids) {
         //return getGame();
-        return getGamesList().GetGames()[0];
+        return getGame(getGamesList(busquedaLocal).GetGames()[0].getId());
     }
 
-    private GamesList getGamesList(){GamesList games = null;
+    private GamesList getGamesList(String search){GamesList games = null;
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https");
         builder.authority("api.rawg.io");
         builder.appendPath("api");
-        builder.appendEncodedPath("games?search=Cyberpunk"); //preguntar porque
+        builder.appendEncodedPath("games?search=" + search);
         try{
             URL url = new URL(builder.build().toString());
             HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
@@ -66,18 +68,18 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
             Log.d("error","error2");
         }
         Log.d("search",Integer.toString(games.GetCount()));
-
+        //Log.d("Description",games.GetGames()[0].getDescription());
         return games;
     }
 
-    private Game getGame(){
+    private Game getGame(int id){
         Game game = null;
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https");
         builder.authority("api.rawg.io");
         builder.appendPath("api");
         builder.appendPath("games");
-        builder.appendPath("123");
+        builder.appendPath(Integer.toString(id));
         try{
             URL url = new URL(builder.build().toString());
             HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
@@ -95,8 +97,9 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("game",game.getName());
-        return game;}
+        Log.d("game", game.getName());
+        return game;
+    }
 
     @Override
     protected void onPreExecute() {

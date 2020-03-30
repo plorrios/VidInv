@@ -48,7 +48,7 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private void startTask(GamePageActivity v) {
-        task = new GetGameThread(this);
+        task = new GetGameThread(this, "the last of us");
 
         if (hasConnectivity()) {
             task.execute();
@@ -66,7 +66,7 @@ public class GamePageActivity extends AppCompatActivity {
     public void gameValues(Game game) {
         title = game.getName();
         //llamar a setTitle de CollapsingToolbarLayout para poner el titulo que queramos, creo
-        collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()-1));
+        collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
         description.setText(game.getDescription());
         gameRelease.setText(game.getReleaseDate());

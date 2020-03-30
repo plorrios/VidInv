@@ -1,5 +1,6 @@
 package com.pabloor.vidinv;
 
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -12,23 +13,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.tasks.GetGameThread;
 
-import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
 
-public class PetitionsManager extends AppCompatActivity {
+public class PetitionsManager{
 
     GetGameThread task;
     TextView textView;
     Game game;
+    Context mContext;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        /*super.onCreate(savedInstanceState);
-        task = new GetGameThread(this);
+    /*public PetitionsManager(Context context){
+        mContext = context;
+        task = new GetGameThread(this,"the last of us");
 
         if(hasConectivity()) {
             task.execute();
-        }*/
+        }
     }
 
     public void setGame(Game gameFromPetition){
@@ -44,9 +44,9 @@ public class PetitionsManager extends AppCompatActivity {
 
 
     public boolean hasConectivity(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return ((networkInfo != null) && (networkInfo.isConnected()));
-    }
+    }*/
 
 }

@@ -76,4 +76,6 @@ public class Game {
     public String getReleaseDate() { return released; }
 
     public String getBackgroundImage() { return backgroundImage; }
+
+    public String getSlug(){return slug;}
 }

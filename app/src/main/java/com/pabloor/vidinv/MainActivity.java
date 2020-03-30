@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         gameListview.setAdapter(adapter);
     }
 
-    public void openGame() {
-        Intent intent = new Intent(this, GamePageActivity.class);
+    public void openGame(View view) {
+        Intent intent = new Intent(MainActivity.this, GamePageActivity.class);
         startActivity(intent);
     }
 }

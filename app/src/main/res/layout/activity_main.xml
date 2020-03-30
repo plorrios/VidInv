@@ -15,7 +15,8 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_anchor="@id/bottomAppBar"
-        app:layout_anchorGravity="top|center" />
+        app:layout_anchorGravity="top|center"
+        android:onClick="openGame"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -29,8 +30,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:onClick="openGame">
+        android:layout_height="match_parent">
 
         <ListView
             android:id="@+id/listLists"
