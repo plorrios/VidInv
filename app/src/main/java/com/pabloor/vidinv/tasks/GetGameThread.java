@@ -26,10 +26,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
-    WeakReference<PetitionsManager> PetitionsWeakReference;
+    WeakReference<GamePageActivity> PetitionsWeakReference;
 
-    public GetGameThread(PetitionsManager activity){
-        this.PetitionsWeakReference = new WeakReference<PetitionsManager>(activity);
+    public GetGameThread(GamePageActivity activity){
+        this.PetitionsWeakReference = new WeakReference<GamePageActivity>(activity);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
     @Override
     protected void onPostExecute(Game game) {
-        PetitionsWeakReference.get().setGame(game);
+        PetitionsWeakReference.get().gameValues(game);
         //gamesActivityWeakReference.get().setGameList(gameList);
         super.onPostExecute(game);
     }

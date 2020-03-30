@@ -23,12 +23,12 @@ public class PetitionsManager extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        /*super.onCreate(savedInstanceState);
         task = new GetGameThread(this);
 
         if(hasConectivity()) {
             task.execute();
-        }
+        }*/
     }
 
     public void setGame(Game gameFromPetition){

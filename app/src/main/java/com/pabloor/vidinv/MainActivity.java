@@ -44,4 +44,9 @@ public class MainActivity extends AppCompatActivity {
         ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists);
         gameListview.setAdapter(adapter);
     }
+
+    public void openGame() {
+        Intent intent = new Intent(this, GamePageActivity.class);
+        startActivity(intent);
+    }
 }
