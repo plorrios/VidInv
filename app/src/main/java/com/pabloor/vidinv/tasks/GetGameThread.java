@@ -34,6 +34,8 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
         this.PetitionsWeakReference = new WeakReference<GamePageActivity>(activity);
     }
 
+    // Para usar en otro metodo crear otra WeakReference para la nueva actividad y un nuevo constructor.
+
     @Override
     protected Game doInBackground(Void... voids) {
         //return getGame();
@@ -108,7 +110,12 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
     @Override
     protected void onPostExecute(Game game) {
-        PetitionsWeakReference.get().gameValues(game);
+        if (PetitionsWeakReference!=null) {
+            PetitionsWeakReference.get().gameValues(game);
+        }
+
+        //para añadir uno nuevo añadir un else if para la nueva reference comprobando que no sea null y hacer un get y ejecutar el metodo pasandole el juego
+
         //gamesActivityWeakReference.get().setGameList(gameList);
         super.onPostExecute(game);
     }
