@@ -16,7 +16,7 @@ public class GamesActivity extends AppCompatActivity {
 
     GetGameThread task;
     TextView textView;
-
+    PetitionsManager petitions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +28,19 @@ public class GamesActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-                startTask(v);
+                //startTask(v);
+                getGame(petitions.getGame());
             }
         });
     }
 
-    private void startTask(View v){
-        /*task = new GetGameThread(this);
+    /*private void startTask(View v){
+        task = new GetGameThread(petitions);
 
         if(hasConectivity()) {
             task.execute();
-        }*/
-    }
+        }
+    }*/
     public void getGame(Game game){
         textView.setText(game.getName());
     }

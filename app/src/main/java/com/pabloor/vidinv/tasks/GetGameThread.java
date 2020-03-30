@@ -11,6 +11,7 @@ import com.pabloor.vidinv.GamePageActivity;
 import com.pabloor.vidinv.GamesActivity;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.Objects.GamesList;
+import com.pabloor.vidinv.PetitionsManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +26,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
-    WeakReference<GamePageActivity> gamesActivityWeakReference;
+    WeakReference<PetitionsManager> PetitionsWeakReference;
 
-    public GetGameThread(GamePageActivity activity){
-        this.gamesActivityWeakReference = new WeakReference<GamePageActivity>(activity);
+    public GetGameThread(PetitionsManager activity){
+        this.PetitionsWeakReference = new WeakReference<PetitionsManager>(activity);
     }
 
     @Override
@@ -104,7 +105,8 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
     @Override
     protected void onPostExecute(Game game) {
-        gamesActivityWeakReference.get().gameValues(game);
+        PetitionsWeakReference.get().setGame(game);
+        //gamesActivityWeakReference.get().setGameList(gameList);
         super.onPostExecute(game);
     }
 }
