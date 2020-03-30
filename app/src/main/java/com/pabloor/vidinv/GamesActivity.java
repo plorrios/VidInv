@@ -34,11 +34,11 @@ public class GamesActivity extends AppCompatActivity {
     }
 
     private void startTask(View v){
-        task = new GetGameThread(this);
+        /*task = new GetGameThread(this);
 
         if(hasConectivity()) {
             task.execute();
-        }
+        }*/
     }
     public void getGame(Game game){
         textView.setText(game.getName());

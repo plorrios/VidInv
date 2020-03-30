@@ -1,11 +1,13 @@
 package com.pabloor.vidinv.tasks;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Debug;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.pabloor.vidinv.GamePageActivity;
 import com.pabloor.vidinv.GamesActivity;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.Objects.GamesList;
@@ -23,10 +25,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
-    WeakReference<GamesActivity> gamesActivityWeakReference;
+    WeakReference<GamePageActivity> gamesActivityWeakReference;
 
-    public GetGameThread(GamesActivity activity){
-        this.gamesActivityWeakReference = new WeakReference<GamesActivity>(activity);
+    public GetGameThread(GamePageActivity activity){
+        this.gamesActivityWeakReference = new WeakReference<GamePageActivity>(activity);
     }
 
     @Override
@@ -63,6 +65,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
             Log.d("error","error2");
         }
         Log.d("search",Integer.toString(games.GetCount()));
+
         return games;
     }
 
@@ -101,7 +104,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
     @Override
     protected void onPostExecute(Game game) {
-        gamesActivityWeakReference.get().getGame(game);
+        gamesActivityWeakReference.get().gameValues(game);
         super.onPostExecute(game);
     }
 }

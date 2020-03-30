@@ -54,6 +54,7 @@ public class Game {
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
+    private String developer;
 
     public Game(int id, @NonNull String name, @NonNull String description) {
         this.id = id;
@@ -69,4 +70,10 @@ public class Game {
     public int getId() {
         return id;
     }
+
+    public String getDescription() { return description; }
+
+    public String getReleaseDate() { return released; }
+
+    public String getBackgroundImage() { return backgroundImage; }
 }
