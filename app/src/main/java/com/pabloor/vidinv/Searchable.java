@@ -35,7 +35,7 @@ public class Searchable extends AppCompatActivity {
     int pastVisibleItems, visibleItemCount, totalItemCount;
     LinearLayoutManager linearLayoutManager;
     int page;
-    boolean loading = true;
+    boolean noMoreGames = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,51 +67,56 @@ public class Searchable extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
+    public void LastGame(){
+        noMoreGames=true;
+    }
+
 
     public void AddGames(final GamesList gamesL)
     {
-        loading = false;
-        if(page >= 2){
-            page = page+1;
-            adapter.addGames(gamesL);
-            adapter.notifyItemRangeInserted(1+(40*page),40*page);
+        if (!noMoreGames) {
+            if (page >= 2) {
+                page = page + 1;
+                adapter.addGames(gamesL);
+                adapter.notifyItemRangeInserted(1 + (40 * page), 40 * page);
 
-        }else {
+            } else {
 
-            gamesList = gamesL;
-            adapter = new GamesListAdapter(this, gamesList, new GamesListAdapter.InterfaceClick() {
-                @Override
-                public void OnInterfaceClick(int position) {
-                    if (adapter.GetGame(position) == null) {
-                        Toast.makeText(Searchable.this, "Game not found", Toast.LENGTH_SHORT).show();
+                gamesList = gamesL;
+                adapter = new GamesListAdapter(this, gamesList, new GamesListAdapter.InterfaceClick() {
+                    @Override
+                    public void OnInterfaceClick(int position) {
+                        if (adapter.GetGame(position) == null) {
+                            Toast.makeText(Searchable.this, "Game not found", Toast.LENGTH_SHORT).show();
+                        }
+                        Intent intent = new Intent(Searchable.this, GamePageActivity.class);
+                        intent.putExtra("GAME_ID", gamesL.GetGames()[position].getId());
+                        startActivity(intent);
                     }
-                    Intent intent = new Intent(Searchable.this, GamePageActivity.class);
-                    intent.putExtra("GAME_ID", gamesL.GetGames()[position].getId());
-                    startActivity(intent);
-                }
-            });
+                });
 
-            RecyclerView recyclerView = findViewById(R.id.SearchableLayout);
-            linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-            recyclerView.setAdapter(adapter);
+                RecyclerView recyclerView = findViewById(R.id.SearchableLayout);
+                linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                recyclerView.setAdapter(adapter);
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    if (dy > 0) {
-                        visibleItemCount = linearLayoutManager.getChildCount();
-                        totalItemCount = linearLayoutManager.getItemCount();
-                        pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        if (dy > 0) {
+                            visibleItemCount = linearLayoutManager.getChildCount();
+                            totalItemCount = linearLayoutManager.getItemCount();
+                            pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
 
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            page = page+1;
-                            startTask(s);
+                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !noMoreGames) {
+                                page = page + 1;
+                                startTask(s);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }
