@@ -24,11 +24,12 @@ public class GetGameListThread extends AsyncTask<Void, Void, GamesList> {
 
     WeakReference<Searchable> PetitionsWeakReference;
     String busquedaLocal;
-    int page = 1;
+    int pageLocal = 1;
 
-    public GetGameListThread(Searchable activity, String busqueda){
+    public GetGameListThread(Searchable activity, String busqueda, int page){
         busquedaLocal = busqueda;
         this.PetitionsWeakReference = new WeakReference<Searchable>(activity);
+        pageLocal = page;
     }
 
     // Para usar en otro metodo crear otra WeakReference para la nueva actividad y un nuevo constructor.
@@ -44,7 +45,7 @@ public class GetGameListThread extends AsyncTask<Void, Void, GamesList> {
         builder.scheme("https");
         builder.authority("api.rawg.io");
         builder.appendPath("api");
-        builder.appendEncodedPath("games?page=" + page + "&page_size=40" + "&search=" + search);
+        builder.appendEncodedPath("games?page=" + pageLocal + "&page_size=40" + "&search=" + search);
         Log.d("search",builder.build().toString());
         try{
             URL url = new URL(builder.build().toString());
