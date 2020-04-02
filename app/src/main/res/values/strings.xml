@@ -22,4 +22,5 @@
     <string name="textfield_label">text</string>
     <string name="textfield_banner">Generic label</string>
     <string name="item_list_content_desc">Item from a list</string>
+    <string name="search_hint">Search videogames</string>
 </resources>

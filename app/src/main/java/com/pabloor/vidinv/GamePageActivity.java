@@ -26,6 +26,7 @@ public class GamePageActivity extends AppCompatActivity {
     private TextView gameRelease;
     private ImageView gameBanner;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    int gameId;
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
@@ -34,6 +35,12 @@ public class GamePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
+
+        gameId = getIntent().getIntExtra("GAME_ID",-1);
+        if (gameId == -1){
+            //devolver error de juego no encontrado
+
+        }
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("message");
@@ -48,7 +55,7 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private void startTask(GamePageActivity v) {
-        task = new GetGameThread(this, "the last of us");
+        task = new GetGameThread(this, gameId);
 
         if (hasConnectivity()) {
             task.execute();

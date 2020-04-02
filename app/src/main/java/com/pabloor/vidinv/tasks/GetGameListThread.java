@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.pabloor.vidinv.GamePageActivity;
 import com.pabloor.vidinv.Objects.Game;
+import com.pabloor.vidinv.Objects.GamesList;
+import com.pabloor.vidinv.Searchable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,52 +20,55 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class GetGameThread extends AsyncTask<Void, Void, Game> {
+public class GetGameListThread extends AsyncTask<Void, Void, GamesList> {
 
-    WeakReference<GamePageActivity> PetitionsWeakReference;
-    int id;
+    WeakReference<Searchable> PetitionsWeakReference;
+    String busquedaLocal;
+    int page = 1;
+
+    public GetGameListThread(Searchable activity, String busqueda){
+        busquedaLocal = busqueda;
+        this.PetitionsWeakReference = new WeakReference<Searchable>(activity);
+    }
 
     // Para usar en otro metodo crear otra WeakReference para la nueva actividad y un nuevo constructor.
 
-    public GetGameThread(GamePageActivity activity, int idBusqueda){
-        id = idBusqueda;
-        this.PetitionsWeakReference = new WeakReference<GamePageActivity>(activity);
-    }
-
     @Override
-    protected Game doInBackground(Void... voids) {
-        return getGame(id);
+    protected GamesList doInBackground(Void... voids) {
+        //return getGame();
+        return getGamesList(busquedaLocal);
     }
 
-    private Game getGame(int id){
-        Game game = null;
+    private GamesList getGamesList(String search){GamesList games = null;
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https");
         builder.authority("api.rawg.io");
         builder.appendPath("api");
-        builder.appendPath("games");
-        builder.appendPath(Integer.toString(id));
+        builder.appendEncodedPath("games?page=" + page + "&page_size=40" + "&search=" + search);
+        Log.d("search",builder.build().toString());
         try{
             URL url = new URL(builder.build().toString());
             HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
+            //Log.d("RespondesCode",connection.getResponseMessage());
             if(connection.getResponseCode() == HttpURLConnection.HTTP_OK){
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 Gson gsonfile =  new Gson();
-                Log.d("",gsonfile.toString());
-                game = gsonfile.fromJson(reader,Game.class);
+                //Log.d("",gsonfile.toString());
+                games = gsonfile.fromJson(reader,GamesList.class);
                 reader.close();
+                //Log.d("received","received");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Log.d("error","error1");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("error","error2");
         }
-        Log.d("petition",builder.build().toString());
-        Log.d("game", game.getName());
-        Log.d("game", Integer.toString(game.getId()));
-        return game;
+        Log.d("search",Integer.toString(games.GetCount()));
+        return games;
     }
 
     @Override
@@ -72,14 +77,14 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
     }
 
     @Override
-    protected void onPostExecute(Game game) {
+    protected void onPostExecute(GamesList games) {
         if (PetitionsWeakReference!=null) {
-            PetitionsWeakReference.get().gameValues(game);
+            PetitionsWeakReference.get().AddGames(games);
         }
 
         //para añadir uno nuevo añadir un else if para la nueva reference comprobando que no sea null y hacer un get y ejecutar el metodo pasandole el juego
 
         //gamesActivityWeakReference.get().setGameList(gameList);
-        super.onPostExecute(game);
+        super.onPostExecute(games);
     }
 }
