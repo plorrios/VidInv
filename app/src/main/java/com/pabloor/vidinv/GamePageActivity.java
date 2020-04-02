@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -28,8 +29,11 @@ public class GamePageActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     int gameId;
 
-    private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    //root reference to database
+    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference gamesRef = rootRef.child("games-test");
+
+    private Game currentGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +43,7 @@ public class GamePageActivity extends AppCompatActivity {
         gameId = getIntent().getIntExtra("GAME_ID",-1);
         if (gameId == -1){
             //devolver error de juego no encontrado
-
         }
-
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("message");
 
         collapsingToolbarLayout = findViewById(R.id.collapsToolbar);
         description = findViewById(R.id.gameDescription);
@@ -71,6 +71,7 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     public void gameValues(Game game) {
+        currentGame = game;
         title = game.getName();
         //llamar a setTitle de CollapsingToolbarLayout para poner el titulo que queramos, creo
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
@@ -80,6 +81,9 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     public void addGame(View view) {
+        gamesRef.child(currentGame.getId() + "").setValue(currentGame);
+
+        Toast.makeText(this, "Game test added", Toast.LENGTH_LONG).show();
     }
 
 }
