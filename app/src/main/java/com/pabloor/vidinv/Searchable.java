@@ -90,7 +90,7 @@ public class Searchable extends AppCompatActivity {
                             Toast.makeText(Searchable.this, "Game not found", Toast.LENGTH_SHORT).show();
                         }
                         Intent intent = new Intent(Searchable.this, GamePageActivity.class);
-                        intent.putExtra("GAME_ID", gamesL.GetGames()[position].getId());
+                        intent.putExtra("GAME_ID", adapter.GetGames(position).getId());
                         startActivity(intent);
                     }
                 });
