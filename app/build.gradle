@@ -6,7 +6,8 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.pabloor.vidinv"
-        minSdkVersion 19
+        minSdkVersion 21
+        multiDexEnabled true
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
