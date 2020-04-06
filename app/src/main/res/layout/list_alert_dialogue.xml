@@ -36,6 +36,15 @@
             android:layout_height="wrap_content"
             android:text="@string/dropped_list" />
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp" />
+
     </RadioGroup>
 
     <LinearLayout
@@ -43,13 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="4dp">
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/scoreInfo"
@@ -63,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="10"
+            android:paddingTop="4dp"
             android:progress="5" />
     </LinearLayout>
 

@@ -9,13 +9,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -25,8 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,12 +34,15 @@ import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
     String title, username, targetList;
     TextView description, gameStudio, gameRelease;
+    FloatingActionButton addButton;
     ImageView gameBanner;
     Game currentGame;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -68,12 +70,11 @@ public class GamePageActivity extends AppCompatActivity {
         gameStudio = findViewById(R.id.studioName);
         gameRelease = findViewById(R.id.gameRelease);
         gameBanner = findViewById(R.id.appbarImage);
+        addButton = findViewById(R.id.add_btn);
 
-        if (username != null) {
-            canAdd = true;
-            //no user, disable add button
+        if (username == null) {
+            addButton.setVisibility(View.GONE);
         }
-
         startTask(this);
     }
 
@@ -96,7 +97,6 @@ public class GamePageActivity extends AppCompatActivity {
     public void gameValues(Game game) {
         currentGame = game;
         title = game.getName();
-        //llamar a setTitle de CollapsingToolbarLayout para poner el titulo que queramos, creo
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
         description.setText(game.getDescription());
@@ -105,8 +105,6 @@ public class GamePageActivity extends AppCompatActivity {
 
     public void addGame(View view) {
         selectListAlert();
-
-        //Toast.makeText(this, "Game test added", Toast.LENGTH_LONG).show();
     }
 
     private void selectListAlert() {
@@ -122,7 +120,7 @@ public class GamePageActivity extends AppCompatActivity {
         scorePart.setVisibility(View.GONE);
 
         final TextView scoreInfo = customLayout.findViewById(R.id.scoreInfo);
-        scoreInfo.setText("Score (1/10)");
+        scoreInfo.setText("Score (5/10)");
 
         SeekBar scoreBar = customLayout.findViewById(R.id.scoreBar);
         scoreBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -176,8 +174,34 @@ public class GamePageActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void pushGameToDb(String tl, int p) {
-        System.out.println("Lista:" + tl);
-        System.out.println("Puntuacion:" + p);
+    private void pushGameToDb(String selectList, int userScore) {
+        Map<String, Object> savedGame = new HashMap<>();
+        savedGame.put("id", currentGame.getId());
+        savedGame.put("name", currentGame.getName());
+        savedGame.put("image", currentGame.getBackgroundImage());
+        savedGame.put("list", selectList);
+
+        if(selectList.equals("completed")) {
+            savedGame.put("score", userScore);
+        } else {
+            savedGame.put("score", "-");
+        }
+
+        db.collection("users/" + username + "/games")
+                .add(savedGame)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("ADD", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("ADD", "Error adding document", e);
+                    }
+                });
+
+
     }
 }
