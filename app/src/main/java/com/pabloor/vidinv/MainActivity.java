@@ -50,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openGame(View view) {
-        Intent intent = new Intent(MainActivity.this, GamePageActivity.class);
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings(View view) {
+        Intent intent = new Intent (MainActivity.this, Settings.class);
         startActivity(intent);
     }
 }

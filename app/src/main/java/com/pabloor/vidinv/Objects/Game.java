@@ -22,7 +22,7 @@ public class Game {
 
 
     private String updated;
-    private String backgroundImage;
+    private String background_image;
     private String backgroundImageAdditional;
     private String website;
 
@@ -75,7 +75,7 @@ public class Game {
 
     public String getReleaseDate() { return released; }
 
-    public String getBackgroundImage() { return backgroundImage; }
+    public String getBackgroundImage() { return background_image; }
 
     public String getSlug(){return slug;}
 }

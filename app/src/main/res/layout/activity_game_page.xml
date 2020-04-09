@@ -175,16 +175,11 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addButton"
+        android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_anchor="@id/bottomAppBar2" />
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar2"
-        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />"
+        android:layout_gravity="end|bottom"
+        android:onClick="addGame"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
