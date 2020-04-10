@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -74,7 +75,11 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
     @Override
     protected void onPostExecute(Game game) {
         if (PetitionsWeakReference!=null) {
-            PetitionsWeakReference.get().gameValues(game);
+            try {
+                PetitionsWeakReference.get().gameValues(game);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         //para añadir uno nuevo añadir un else if para la nueva reference comprobando que no sea null y hacer un get y ejecutar el metodo pasandole el juego

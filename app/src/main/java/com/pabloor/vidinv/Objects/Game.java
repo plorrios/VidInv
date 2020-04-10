@@ -54,7 +54,6 @@ public class Game {
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
-    private String developer;
 
     public Game(int id, @NonNull String name, @NonNull String description) {
         this.id = id;
@@ -77,5 +76,9 @@ public class Game {
 
     public String getBackgroundImage() { return background_image; }
 
-    public String getSlug(){return slug;}
+    public String getSlug() { return slug; }
+
+    public String getRedditURL() { return redditUrl; }
+
+    public String getMetacriticURL() { return metacriticURL; }
 }
