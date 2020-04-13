@@ -55,10 +55,18 @@ public class Game {
     private int additionsCount;
     private int gameSeriesCount;
 
+    private int list;
+
     public Game(int id, @NonNull String name, @NonNull String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public Game() {
+        this.id = -1;
+        this.name = "";
+        this.description = "";
     }
 
     @NonNull
@@ -81,4 +89,9 @@ public class Game {
     public String getRedditURL() { return redditUrl; }
 
     public String getMetacriticURL() { return metacriticURL; }
+
+    public String toString() {
+        return "Id: " + this.id + "\nName: " + this.name + "\nDescription: " + this.description
+                + "\nBackground image: " + this.background_image;
+    }
 }

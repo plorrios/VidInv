@@ -1,5 +1,6 @@
 package com.pabloor.vidinv;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,22 +8,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TableLayout;
 
+import com.google.android.gms.common.api.TransformedResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Objects.Game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import adapters.ListOfListsAdapter;
+import com.pabloor.vidinv.Adapters.ListOfListsAdapter;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     //Repositorio: https://github.com/maiky86/KotlinRepos
     //Glide library para fragments varias funciones interesantes
     //ViewModelpara vistas con mejores ciclos de vida (Presenter con patron de diseño modelview presenter)
@@ -33,11 +43,16 @@ public class MainActivity extends AppCompatActivity {
 
     //Lista de los nombres de las listas
     List<String> listOfLists;
-    //Lista local de las listas completas de un determinado usuario
-    List<List<Game>> userList;
+    //Lista local de las listas de un determinado usuario
+    List<String> pending;
+    List<String> completed;
+    List<String> dropped;
+    List<String> playing;
 
     BottomAppBar bottom;
     FloatingActionButton fab;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +71,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listOfLists = new ArrayList<String>();
+        instantiateList();
 
         //Aquí debería ir el método de coger los nombres de las diferentes listas de un usuario desde la base de datos
-        for (int i = 0; i < 15; i++) {
-            listOfLists.add("Lista " + i);
-        }
+        dummyBD();
 
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameListview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists);
         gameListview.setAdapter(adapter);
+    }
+
+    public void instantiateList() {
+        listOfLists = new ArrayList<String>();
+        listOfLists.add("Completed");
+        listOfLists.add("Dropped");
+        listOfLists.add("Pending");
+        listOfLists.add("Playing");
+    }
+
+    public void dummyBD() {
+        playing = new ArrayList<String>();
+        dropped = new ArrayList<String>();
+        completed = new ArrayList<String>();
+        pending = new ArrayList<String>();
+
+        db.collection("users").document("anleus").collection("games")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    switch (documentSnapshot.getString("list")) {
+                        case "playing":
+                            playing.add(documentSnapshot.getId());
+                            break;
+                        case "dropped":
+                            dropped.add(documentSnapshot.getId());
+                            break;
+                        case "completed":
+                            completed.add(documentSnapshot.getId());
+                            break;
+                        case "pending":
+                            pending.add(documentSnapshot.getId());
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     public void openGame(View view) {
