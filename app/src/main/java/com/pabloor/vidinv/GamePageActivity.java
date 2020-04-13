@@ -1,9 +1,5 @@
 package com.pabloor.vidinv;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -13,41 +9,40 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
     String title, username, targetList;
-    TextView description, gameStudio, gameRelease;
+    TextView description, gameStudio, gameRelease, redditURL, metacriticURL;
     FloatingActionButton addButton;
     ImageView gameBanner;
     Game currentGame;
     CollapsingToolbarLayout collapsingToolbarLayout;
     int gameId, userGameScore;
-    boolean canAdd = false;
 
     //database instance
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -57,6 +52,7 @@ public class GamePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        getSupportActionBar().hide();
 
         username = preferences.getString("Username", null);
 
@@ -70,12 +66,16 @@ public class GamePageActivity extends AppCompatActivity {
         gameStudio = findViewById(R.id.studioName);
         gameRelease = findViewById(R.id.gameRelease);
         gameBanner = findViewById(R.id.appbarImage);
+        redditURL = findViewById(R.id.reddit_link);
+        metacriticURL = findViewById(R.id.metacritic_link);
         addButton = findViewById(R.id.add_btn);
 
         if (username == null) {
             addButton.setVisibility(View.GONE);
         }
         startTask(this);
+
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
     }
 
     private void startTask(GamePageActivity v) {
@@ -94,13 +94,33 @@ public class GamePageActivity extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
-    public void gameValues(Game game) {
+    public void gameValues(Game game) throws ParseException {
         currentGame = game;
         title = game.getName();
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
-        description.setText(game.getDescription());
-        gameRelease.setText(game.getReleaseDate());
+        description.setText(htmlToText(game.getDescription()));
+        gameRelease.setText(dataFormat(game.getReleaseDate()));
+        redditURL.setText(game.getRedditURL());
+        metacriticURL.setText(game.getMetacriticURL());
+    }
+
+    private String htmlToText(String html) {
+        String text = html.replaceAll("\\<.*?\\>", "");
+        return text;
+    }
+
+    private String dataFormat(String oldDate) throws ParseException {
+        String oldFormat = "yyyy/MM/dd";
+        String newFormat = "dd/MM/yyyy";
+
+        String newDate;
+        SimpleDateFormat sdf = new SimpleDateFormat(oldFormat);
+        Date d = sdf.parse(oldDate);
+        sdf.applyPattern(newFormat);
+        newDate = sdf.format(d);
+
+        return newDate;
     }
 
     public void addGame(View view) {

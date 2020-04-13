@@ -18,7 +18,7 @@
     <string name="studio_name">Game Studio example name</string>
     <string name="release_title">Release date</string>
     <string name="release_date">29/01/2019</string>
-    <string name="links_title">Communities</string>
+    <string name="links_title">Links</string>
     <string name="textfield_label">text</string>
     <string name="textfield_banner">Generic label</string>
     <string name="item_list_content_desc">Item from a list</string>
