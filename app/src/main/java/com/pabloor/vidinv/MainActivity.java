@@ -13,6 +13,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TableLayout;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pabloor.vidinv.Objects.Game;
 
 import java.util.ArrayList;
@@ -29,15 +31,34 @@ public class MainActivity extends AppCompatActivity {
     //retrofit convierte APIs en interfaces android facil de usar para acceder a archivos JSON
     //databinding para indicar el texto desde el layout sin tener que buscar el text y setearle el texto
 
+    //Lista de los nombres de las listas
     List<String> listOfLists;
+    //Lista local de las listas completas de un determinado usuario
+    List<List<Game>> userList;
+
+    BottomAppBar bottom;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        bottom = findViewById(R.id.bottomAppBar);
+        fab = findViewById(R.id.newListButton);
+
+        //setSupportActionBar(bottom);
+
+        bottom.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings(v);
+            }
+        });
+
         listOfLists = new ArrayList<String>();
 
+        //Aquí debería ir el método de coger los nombres de las diferentes listas de un usuario desde la base de datos
         for (int i = 0; i < 15; i++) {
             listOfLists.add("Lista " + i);
         }

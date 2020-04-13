@@ -26,7 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_anchor="@+id/relativeLayout"
-        app:layout_anchorGravity="bottom|center" />
+        app:layout_anchorGravity="bottom|center"
+        app:fabCradleVerticalOffset="0dp"
+        app:navigationIcon="@drawable/ic_settings"/>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -45,13 +47,6 @@
             android:layout_marginTop="50dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="120dp" />
-
-        <Button
-            android:id="@+id/settings_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="openSettings"
-            android:text="Settings" />
 
     </RelativeLayout>
 
