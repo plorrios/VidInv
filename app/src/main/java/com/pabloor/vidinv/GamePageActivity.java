@@ -24,6 +24,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
@@ -94,6 +95,17 @@ public class GamePageActivity extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
+    private void gameInDatabase(Game game) {
+        Query existInDb = db.collection("users/" + username + "/games")
+                .whereEqualTo("id", game.getId());
+
+        if (existInDb != null) {
+            addButton.setVisibility(View.VISIBLE);
+        } else {
+            addButton.setVisibility(View.GONE);
+        }
+    }
+
     public void gameValues(Game game) throws ParseException {
         currentGame = game;
         title = game.getName();
@@ -103,6 +115,8 @@ public class GamePageActivity extends AppCompatActivity {
         gameRelease.setText(dataFormat(game.getReleaseDate()));
         redditURL.setText(game.getRedditURL());
         metacriticURL.setText(game.getMetacriticURL());
+
+        gameInDatabase(game);
     }
 
     private String htmlToText(String html) {
