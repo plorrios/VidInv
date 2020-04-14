@@ -178,7 +178,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:onClick="addGame"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"/>
+        android:onClick="addGame"
+        android:src="@android:drawable/ic_input_add"
+        android:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:onClick="editGame"
+        android:src="@android:drawable/ic_menu_edit"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
