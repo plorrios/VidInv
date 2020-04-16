@@ -56,8 +56,15 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
         games.addAll(Arrays.asList(gamesl.GetGames()));
     }
 
-    public Game GetGames(int position){
-        return games.get(position);
+    public Game[] GetGames(){
+        return gamesList.GetGames();
+    }
+
+    public void ChangeGames(GamesList gamesl){
+        gamesList.changeGames(gamesl.GetGames());
+        games.clear();
+        games.addAll(Arrays.asList(gamesl.GetGames()));
+        notifyDataSetChanged();
     }
 
 
