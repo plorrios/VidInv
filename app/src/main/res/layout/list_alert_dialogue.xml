@@ -36,15 +36,6 @@
             android:layout_height="wrap_content"
             android:text="@string/dropped_list" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="8dp" />
-
     </RadioGroup>
 
     <LinearLayout
@@ -54,10 +45,21 @@
         android:orientation="vertical"
         android:paddingTop="8dp">
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/listDivider"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp" />
+
         <TextView
             android:id="@+id/scoreInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="12dp"
             android:text="@string/score_info" />
 
         <SeekBar

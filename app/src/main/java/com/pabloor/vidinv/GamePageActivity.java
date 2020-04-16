@@ -81,6 +81,7 @@ public class GamePageActivity extends AppCompatActivity {
             addButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
         }
+        
         startTask(this);
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
@@ -102,19 +103,24 @@ public class GamePageActivity extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
-    private void gameInDatabase(Game game) {
+    private void gameInDatabase(final Game game) {
         Query existInDb = db.collection("users/" + username + "/games")
                 .whereEqualTo("id", game.getId());
 
-        /*if (existInDb.get() != null) {
-            addButton.setVisibility(View.VISIBLE);
-            editButton.setVisibility(View.GONE);
-        } else {
-            addButton.setVisibility(View.GONE);
-            editButton.setVisibility(View.VISIBLE);
-        }*/
-        editButton.setVisibility(View.GONE);
-        addButton.setVisibility(View.VISIBLE);
+        existInDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.getData().get("id") == game.getId() + "") {
+                            activateEditBtn();
+                        } else {
+                            activateAddBtn();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void gameValues(Game game) throws ParseException {
@@ -148,11 +154,11 @@ public class GamePageActivity extends AppCompatActivity {
         return newDate;
     }
 
-    public void addGame() {
+    public void addGame(View view) {
         selectListAlert(false);
     }
 
-    public void editGame() {
+    public void editGame(View view) {
         selectListAlert(true);
     }
 
@@ -245,7 +251,7 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+        activateEditBtn();
     }
 
     public void updateGame(String docID, String selectList, int userScore) {
@@ -298,7 +304,15 @@ public class GamePageActivity extends AppCompatActivity {
                         Log.w("ADD", "Error adding document", e);
                     }
                 });
+    }
 
+    public void activateAddBtn() {
+        addButton.setVisibility(View.VISIBLE);
+        editButton.setVisibility(View.GONE);
+    }
 
+    public void activateEditBtn() {
+        addButton.setVisibility(View.GONE);
+        editButton.setVisibility(View.VISIBLE);
     }
 }
