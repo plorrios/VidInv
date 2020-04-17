@@ -47,6 +47,7 @@ public class Searchable extends Fragment {
     int page;
     boolean noMoreGames = false;
     View rootView;
+    boolean isLoading = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,9 +93,11 @@ public class Searchable extends Fragment {
                     totalItemCount = linearLayoutManager.getItemCount();
                     pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
 
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !noMoreGames) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !noMoreGames &&  !isLoading) {
+                        adapter.addFakeTop();
                         page = page + 1;
                         startTask(s);
+                        isLoading = true;
                     }
                 }
             }
@@ -104,6 +107,7 @@ public class Searchable extends Fragment {
     }
 
     public void startSearch(String s){
+
         query = s;
         startTask(this);
 
@@ -126,17 +130,28 @@ public class Searchable extends Fragment {
 
     public void LastGame(){
         noMoreGames=true;
+        adapter.removeTopGame();
+        adapter.notifyItemRemoved(adapter.getItemCount()-1);
+        Toast.makeText(getActivity(), "Reached end of searh", Toast.LENGTH_SHORT).show();
     }
 
 
     public void AddGames(final GamesList gamesL)
     {
+        if (gamesL.GetGames().length==0)
+        {
+            ((SearchActivity)getActivity()).finishedTask();
+            Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!noMoreGames) {
             if (page >= 2) {
+                adapter.removeTopGame();
                 page = page + 1;
                 adapter.addGames(gamesL);
                 adapter.notifyItemRangeInserted(1 + (40 * page), 40 * page);
-
+                isLoading = false;
             } else {
                 page = 1;
                 gamesList.changeGames(gamesL.GetGames());
@@ -144,6 +159,7 @@ public class Searchable extends Fragment {
                 adapter.notifyDataSetChanged();
                 Log.d("error",adapter.GetGames()[0].getName());
                 ((SearchActivity)getActivity()).finishedTask();
+                isLoading = false;
             }
         }
     }
