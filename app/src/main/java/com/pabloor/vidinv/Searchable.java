@@ -143,6 +143,7 @@ public class Searchable extends Fragment {
                 adapter.ChangeGames(gamesL);
                 adapter.notifyDataSetChanged();
                 Log.d("error",adapter.GetGames()[0].getName());
+                ((SearchActivity)getActivity()).finishedTask();
             }
         }
     }

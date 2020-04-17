@@ -10,20 +10,28 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 public class SearchActivity extends AppCompatActivity {
 
     Searchable fragment;
+    ProgressBar progressBar = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        /*FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragment = new Searchable();
         fragmentTransaction.add(R.id.my_fragment, fragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
+
+        fragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment);
+
+        progressBar = findViewById(R.id.progressBar);
+
     }
 
     @Override
@@ -39,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
                 //Searchable searchable = (Searchable) getSupportFragmentManager().findFragmentByTag("com.pabloor.vidinv.Searchable");
                 //searchable.startSearch(s);
                 fragment.startSearch(s);
+                progressBar.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -54,6 +63,11 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         return true;
+    }
+
+    public void finishedTask()
+    {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 }
