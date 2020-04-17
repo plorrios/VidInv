@@ -91,9 +91,7 @@ public class GetGameListThread extends AsyncTask<Void, Void, GamesList> {
         }else if (PetitionsWeakReference!=null && end){
             PetitionsWeakReference.get().LastGame();
         }
-
         //para añadir uno nuevo añadir un else if para la nueva reference comprobando que no sea null y hacer un get y ejecutar el metodo pasandole el juego
-
         //gamesActivityWeakReference.get().setGameList(gameList);
         super.onPostExecute(games);
     }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,9 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
     ArrayList<Game> games;
     private Context mContext;
 
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
 
     public GamesListAdapter(Context context , GamesList gamesL, InterfaceClick ParameterInterfaceClick){
         gamesList = gamesL;
@@ -56,28 +60,54 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
         games.addAll(Arrays.asList(gamesl.GetGames()));
     }
 
-    public Game GetGames(int position){
-        return games.get(position);
+    public Game[] GetGames(){
+        return gamesList.GetGames();
+    }
+
+    public void ChangeGames(GamesList gamesl){
+        gamesList.changeGames(gamesl.GetGames());
+        games.clear();
+        games.addAll(Arrays.asList(gamesl.GetGames()));
+        notifyDataSetChanged();
+    }
+
+    public void removeTopGame(){
+        games.remove(games.size()-1);
+    }
+
+    public void addFakeTop(){
+        games.add(null);
+        notifyItemRangeInserted(games.size(),1);
+    }
+
+    public Game getTopGame(){
+        return games.get(games.size()-1);
     }
 
 
     @NonNull
     @Override
     public GamesListAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View FirstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_game,parent,false);
-        final CustomViewHolder viewHolder = new CustomViewHolder(FirstView);
-        FirstView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    interfaceClick.OnInterfaceClick(viewHolder.getAdapterPosition());
+        Log.d("",Integer.toString(viewType));
+        if (viewType == VIEW_TYPE_ITEM) {
+            View FirstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_game,parent,false);
+            final CustomViewHolder viewHolder = new CustomViewHolder(FirstView);
+            FirstView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        interfaceClick.OnInterfaceClick(viewHolder.getAdapterPosition());
 
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
-        return viewHolder;
+            });
+            return viewHolder;
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
+            return new LoadingViewHolder(view);
+        }
     }
 
 
@@ -95,15 +125,27 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
     @Override
     public void onBindViewHolder(GamesListAdapter.CustomViewHolder holder, int position) {
 
-        Picasso.get().load(games.get(position).getBackgroundImage()).resize(107,60).into(holder.image);
-        holder.name.setText(games.get(position).getName());
+        if (games.get(position)==null){}
 
-        RequestOptions options = new RequestOptions();
-        Glide
-                .with(this.mContext)
-                .load(games.get(position).getBackgroundImage())
-                .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(10)))
-                .into(holder.image);
+        if (holder instanceof CustomViewHolder && games.get(position)!=null) {
+            Picasso.get().load(games.get(position).getBackgroundImage()).resize(107,60).into(holder.image);
+            holder.name.setText(games.get(position).getName());
+
+            RequestOptions options = new RequestOptions();
+            Glide
+                    .with(this.mContext)
+                    .load(games.get(position).getBackgroundImage())
+                    .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(10)))
+                    .into(holder.image);
+        } else if (holder instanceof LoadingViewHolder) {
+            showLoadingView((LoadingViewHolder) holder, position);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return games.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     @Override
@@ -125,6 +167,22 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
             image = (ImageView) itemView.findViewById(R.id.GameSearchedImage);
             name = (TextView) itemView.findViewById(R.id.GameSearchedTitle);
         }
+    }
+
+
+    private class LoadingViewHolder extends CustomViewHolder {
+
+        ProgressBar progressBar;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBar);
+        }
+    }
+
+    private void showLoadingView(LoadingViewHolder viewHolder, int position) {
+        //ProgressBar would be displayed
+
     }
 
 }

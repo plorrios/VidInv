@@ -13,4 +13,11 @@ public class GamesList {
     public int GetCount()
     {return count;}
 
+    public GamesList(Game[] games){
+        count = games.length;
+        results = games;
+    }
+
+    public void changeGames(Game[] games){results = games;}
+
 }
