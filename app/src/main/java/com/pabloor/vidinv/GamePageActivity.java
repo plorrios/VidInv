@@ -18,13 +18,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
@@ -39,7 +44,7 @@ public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
     String title, username, targetList;
     TextView description, gameStudio, gameRelease, redditURL, metacriticURL;
-    FloatingActionButton addButton;
+    FloatingActionButton addButton, editButton;
     ImageView gameBanner;
     Game currentGame;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -70,10 +75,13 @@ public class GamePageActivity extends AppCompatActivity {
         redditURL = findViewById(R.id.reddit_link);
         metacriticURL = findViewById(R.id.metacritic_link);
         addButton = findViewById(R.id.add_btn);
+        editButton = findViewById(R.id.edit_btn);
 
         if (username == null) {
             addButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
         }
+        
         startTask(this);
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
@@ -95,18 +103,29 @@ public class GamePageActivity extends AppCompatActivity {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
-    private void gameInDatabase(Game game) {
+    private void gameInDatabase(final Game game) {
         Query existInDb = db.collection("users/" + username + "/games")
                 .whereEqualTo("id", game.getId());
 
-        if (existInDb != null) {
-            addButton.setVisibility(View.VISIBLE);
-        } else {
-            addButton.setVisibility(View.GONE);
-        }
+        existInDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.getData().get("id") == game.getId() + "") {
+                            activateEditBtn();
+                        } else {
+                            activateAddBtn();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void gameValues(Game game) throws ParseException {
+        gameInDatabase(game);
+
         currentGame = game;
         title = game.getName();
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
@@ -115,8 +134,6 @@ public class GamePageActivity extends AppCompatActivity {
         gameRelease.setText(dataFormat(game.getReleaseDate()));
         redditURL.setText(game.getRedditURL());
         metacriticURL.setText(game.getMetacriticURL());
-
-        gameInDatabase(game);
     }
 
     private String htmlToText(String html) {
@@ -138,10 +155,14 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     public void addGame(View view) {
-        selectListAlert();
+        selectListAlert(false);
     }
 
-    private void selectListAlert() {
+    public void editGame(View view) {
+        selectListAlert(true);
+    }
+
+    private void selectListAlert(final boolean edit) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_list_title);
@@ -171,7 +192,6 @@ public class GamePageActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-
         RadioGroup radioGroup = customLayout.findViewById(R.id.listGroup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -200,12 +220,61 @@ public class GamePageActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                pushGameToDb(targetList, userGameScore);
+                if (!edit) {
+                    pushGameToDb(targetList, userGameScore);
+                } else {
+                    editGameInDB(targetList, userGameScore);
+                }
+
             }
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void editGameInDB(final String selectList, final int userScore) {
+        final String[] gameDbId = {""};
+
+        db.collection("users/" + username + "/games")
+                .whereEqualTo("id", currentGame.getId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                updateGame(document.getId(), selectList, userScore);
+                            }
+                        } else {
+                            Log.d("si", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        activateEditBtn();
+    }
+
+    public void updateGame(String docID, String selectList, int userScore) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("list", selectList);
+        if (selectList.equals("completed")) {
+            updates.put("score", userScore);
+        }
+
+        db.collection("users/" + username + "/games").document(docID)
+                .update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("si", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("si", "Error updating document", e);
+                    }
+                });
     }
 
     private void pushGameToDb(String selectList, int userScore) {
@@ -235,7 +304,15 @@ public class GamePageActivity extends AppCompatActivity {
                         Log.w("ADD", "Error adding document", e);
                     }
                 });
+    }
 
+    public void activateAddBtn() {
+        addButton.setVisibility(View.VISIBLE);
+        editButton.setVisibility(View.GONE);
+    }
 
+    public void activateEditBtn() {
+        addButton.setVisibility(View.GONE);
+        editButton.setVisibility(View.VISIBLE);
     }
 }
