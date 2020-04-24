@@ -18,11 +18,16 @@ public class ListOfListsAdapter extends RecyclerView.Adapter<ListOfListsAdapter.
     Context cont;
     int res;
     List<String> gameList;
+    private IClickListener clickList;
+    private ILongClickListener longClickList;
 
-    public ListOfListsAdapter(Context cnt, int resource, List<String> list) {
+
+    public ListOfListsAdapter(Context cnt, int resource, List<String> list, IClickListener onClk, ILongClickListener onLongClk) {
         cont = cnt;
         res = resource;
         gameList = list;
+        clickList = onClk;
+        longClickList = onLongClk;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +52,22 @@ public class ListOfListsAdapter extends RecyclerView.Adapter<ListOfListsAdapter.
     public ListOfListsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View firstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, null);
         final ViewHolder vh = new ViewHolder(firstView);
+
+        firstView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickList.onClickListener(vh.getAdapterPosition());
+            }
+        });
+
+        firstView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                longClickList.onClickLongListener(vh.getAdapterPosition());
+                return true;
+            }
+        });
+
         return vh;
     }
 
@@ -70,4 +91,13 @@ public class ListOfListsAdapter extends RecyclerView.Adapter<ListOfListsAdapter.
         notifyDataSetChanged();
         return true;
     }
+
+    public interface IClickListener {
+        void onClickListener(int position);
+    }
+
+    public interface ILongClickListener {
+        void onClickLongListener(int position);
+    }
 }
+

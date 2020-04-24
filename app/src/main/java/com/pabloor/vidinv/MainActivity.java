@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.TransformedResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +26,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Objects.Game;
 
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +82,18 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameListview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists);
+
+        ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists,  new ListOfListsAdapter.IClickListener() {
+            @Override
+            public void onClickListener(int position) {
+                click(position);
+            }
+        }, new ListOfListsAdapter.ILongClickListener() {
+            @Override
+            public void onClickLongListener(int position) {
+                click(position);
+            }
+        });
         gameListview.setAdapter(adapter);
     }
 
@@ -102,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                     switch (documentSnapshot.getString("list")) {
                         case "playing":
                             playing.add(documentSnapshot.getId());
@@ -117,8 +132,13 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 }
+                Log.d(TAG, "Playing:" + playing.toString());
+                Log.d(TAG, "Dropped:" + dropped.toString());
+                Log.d(TAG, "Completed:" + completed.toString());
+                Log.d(TAG, "Pending:" + pending.toString());
             }
         });
+
     }
 
     public void openGame(View view) {
@@ -129,5 +149,30 @@ public class MainActivity extends AppCompatActivity {
     public void openSettings(View view) {
         Intent intent = new Intent (MainActivity.this, Settings.class);
         startActivity(intent);
+    }
+
+    public void click(int pos) {
+        List<String> dummy = new ArrayList<String>();
+        switch (pos) {
+            case 0:
+                dummy = completed;
+                break;
+            case 1:
+                dummy = dropped;
+                break;
+            case 2:
+                dummy = pending;
+                break;
+            case 3:
+                dummy = playing;
+                break;
+        }
+        if (!dummy.isEmpty()) {
+            Intent intent = new Intent(getBaseContext(), GameListActivity.class);
+            intent.putStringArrayListExtra("NAME_LIST", (ArrayList<String>) dummy);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Esta lista está vacía", Toast.LENGTH_SHORT).show();
+        }
     }
 }

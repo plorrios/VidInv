@@ -43,6 +43,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".Searchable" />
         </activity>
+        <activity android:name=".GameListActivity"></activity>
     </application>
 
 </manifest>
