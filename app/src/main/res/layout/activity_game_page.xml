@@ -191,6 +191,6 @@
         android:layout_margin="16dp"
         android:onClick="editGame"
         android:src="@android:drawable/ic_menu_edit"
-        android:visibility="gone" />
+        android:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

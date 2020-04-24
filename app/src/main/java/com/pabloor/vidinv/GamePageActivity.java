@@ -107,19 +107,21 @@ public class GamePageActivity extends AppCompatActivity {
         Query existInDb = db.collection("users/" + username + "/games")
                 .whereEqualTo("id", game.getId());
 
-        existInDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (document.getData().get("id") == game.getId() + "") {
-                            activateEditBtn();
-                        } else {
-                            activateAddBtn();
+        existInDb.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.getData().get("id") == game.getId() + "") {
+                                    activateEditBtn();
+                                    break;
+                                } else {
+                                    activateAddBtn();
+                                }
+                            }
                         }
                     }
-                }
-            }
         });
     }
 
@@ -222,10 +224,10 @@ public class GamePageActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if (!edit) {
                     pushGameToDb(targetList, userGameScore);
+                    activateEditBtn();
                 } else {
                     editGameInDB(targetList, userGameScore);
                 }
-
             }
         });
 
@@ -251,7 +253,6 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     }
                 });
-        activateEditBtn();
     }
 
     public void updateGame(String docID, String selectList, int userScore) {
@@ -308,11 +309,11 @@ public class GamePageActivity extends AppCompatActivity {
 
     public void activateAddBtn() {
         addButton.setVisibility(View.VISIBLE);
-        editButton.setVisibility(View.GONE);
+        editButton.setVisibility(View.INVISIBLE);
     }
 
     public void activateEditBtn() {
-        addButton.setVisibility(View.GONE);
+        addButton.setVisibility(View.INVISIBLE);
         editButton.setVisibility(View.VISIBLE);
     }
 }
