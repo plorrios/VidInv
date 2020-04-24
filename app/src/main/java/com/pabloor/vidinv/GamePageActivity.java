@@ -142,7 +142,7 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private String dataFormat(String oldDate) throws ParseException {
-        String oldFormat = "yyyy/MM/dd";
+        String oldFormat = "yyyy-MM-dd";
         String newFormat = "dd/MM/yyyy";
 
         String newDate;
