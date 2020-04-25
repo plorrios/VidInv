@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void dummyBD() {
+        Log.d(TAG, "Retrieving user data...");
         playing = new ArrayList<Game>();
         dropped = new ArrayList<Game>();
         completed = new ArrayList<Game>();
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (!dummy.isEmpty()) {
+            Log.d(TAG, dummy.toString());
             Intent intent = new Intent(getBaseContext(), GameListActivity.class);
             intent.putExtra("NAME_LIST", (ArrayList<Game>) dummy);
             startActivity(intent);
