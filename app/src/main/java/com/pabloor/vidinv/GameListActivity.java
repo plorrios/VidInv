@@ -33,6 +33,7 @@ public class GameListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_games);
+        getSupportActionBar().hide();
 
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString("Username", null);
