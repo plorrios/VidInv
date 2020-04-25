@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "752906632774-rkkkk73cj71guref8j91p8orirg1j5qr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pabloor.vidinv",
+            "certificate_hash": "6e8845acf6f5fc85c85512278ec8827e2ada0d83"
+          }
+        },
+        {
+          "client_id": "752906632774-se9c5t2phn1j6be7t977c4i62e7ctdko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pabloor.vidinv",
+            "certificate_hash": "d46f536b46ccde86324e8f13a0e615bcb303ac70"
+          }
+        },
+        {
           "client_id": "752906632774-gssodh1n1lioq8psggfij96leeo6t4hk.apps.googleusercontent.com",
           "client_type": 3
         }
