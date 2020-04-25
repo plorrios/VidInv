@@ -16,8 +16,6 @@
         <activity
             android:name=".Searchable"
             android:launchMode="singleTop">
-
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
