@@ -13,12 +13,6 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/completeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/complete_list" />
-
-        <RadioButton
             android:id="@+id/playingBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,6 +29,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dropped_list" />
+
+        <RadioButton
+            android:id="@+id/completeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/complete_list" />
 
     </RadioGroup>
 
