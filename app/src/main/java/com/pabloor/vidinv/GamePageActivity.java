@@ -209,7 +209,7 @@ public class GamePageActivity extends AppCompatActivity {
                         scorePart.setVisibility(View.GONE);
                         break;
                     case R.id.plannedBtn:
-                        targetList = "planned";
+                        targetList = "pending";
                         scorePart.setVisibility(View.GONE);
                         break;
                     case R.id.droppedBtn:

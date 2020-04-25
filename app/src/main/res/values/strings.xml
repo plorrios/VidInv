@@ -32,7 +32,7 @@
     <string name="score_info">Score (%1s/10)</string>
     <string name="complete_list">Complete</string>
     <string name="playing_list">Playing</string>
-    <string name="planned_play_list">Planned to play</string>
+    <string name="planned_play_list">Pending</string>
     <string name="dropped_list">Dropped</string>
     <string name="not_found_user">Enter a username in Settings in order to save your lists</string>
     <string name="empty_list">This list is empty</string>
