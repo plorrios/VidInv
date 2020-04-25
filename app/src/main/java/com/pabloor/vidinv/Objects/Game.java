@@ -2,11 +2,13 @@ package com.pabloor.vidinv.Objects;
 
 import androidx.annotation.NonNull;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
 
     //añadir @SerializeName cuando nombre de variable sea distinto al nombre en el json
 
-    private String id;
+    private int id;
     @NonNull
     private String slug;
     @NonNull
@@ -57,14 +59,14 @@ public class Game {
 
     private int list;
 
-    public Game(String id, @NonNull String name, @NonNull String description) {
+    public Game(int id, @NonNull String name, @NonNull String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
     public Game() {
-        this.id = "-1";
+        this.id = -1;
         this.name = "";
         this.description = "";
     }
@@ -74,7 +76,7 @@ public class Game {
         return name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

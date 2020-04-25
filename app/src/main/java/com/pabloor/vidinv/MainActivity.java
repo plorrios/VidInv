@@ -128,19 +128,19 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
-                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
                                 playing.add(current);
                                 break;
                             case "dropped":
-                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
                                 dropped.add(current);
                                 break;
                             case "completed":
-                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
                                 completed.add(current);
                                 break;
                             case "pending":
-                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
                                 pending.add(current);
                                 break;
                         }
