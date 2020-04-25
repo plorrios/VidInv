@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,20 +48,23 @@ public class MainActivity extends AppCompatActivity {
     //Lista de los nombres de las listas
     List<String> listOfLists;
     //Lista local de las listas de un determinado usuario
-    List<String> pending;
-    List<String> completed;
-    List<String> dropped;
-    List<String> playing;
+    List<Game> pending;
+    List<Game> completed;
+    List<Game> dropped;
+    List<Game> playing;
 
     BottomAppBar bottom;
     FloatingActionButton fab;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        user = preferences.getString("Username", null);
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
@@ -106,39 +110,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void dummyBD() {
-        playing = new ArrayList<String>();
-        dropped = new ArrayList<String>();
-        completed = new ArrayList<String>();
-        pending = new ArrayList<String>();
+        playing = new ArrayList<Game>();
+        dropped = new ArrayList<Game>();
+        completed = new ArrayList<Game>();
+        pending = new ArrayList<Game>();
 
-        db.collection("users").document("anleus").collection("games")
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
-                    switch (documentSnapshot.getString("list")) {
-                        case "playing":
-                            playing.add(documentSnapshot.getId());
-                            break;
-                        case "dropped":
-                            dropped.add(documentSnapshot.getId());
-                            break;
-                        case "completed":
-                            completed.add(documentSnapshot.getId());
-                            break;
-                        case "pending":
-                            pending.add(documentSnapshot.getId());
-                            break;
+        if (user == null) {
+            Toast.makeText(this, R.string.not_found_user, Toast.LENGTH_SHORT).show();
+        } else {
+
+            db.collection("users").document(user).collection("games")
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    Game current;
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
+                        switch (documentSnapshot.getString("list")) {
+                            case "playing":
+                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                playing.add(current);
+                                break;
+                            case "dropped":
+                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                dropped.add(current);
+                                break;
+                            case "completed":
+                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                completed.add(current);
+                                break;
+                            case "pending":
+                                current = new Game(documentSnapshot.getId(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                pending.add(current);
+                                break;
+                        }
                     }
+                    Log.d(TAG, "Playing:" + playing.toString());
+                    Log.d(TAG, "Dropped:" + dropped.toString());
+                    Log.d(TAG, "Completed:" + completed.toString());
+                    Log.d(TAG, "Pending:" + pending.toString());
                 }
-                Log.d(TAG, "Playing:" + playing.toString());
-                Log.d(TAG, "Dropped:" + dropped.toString());
-                Log.d(TAG, "Completed:" + completed.toString());
-                Log.d(TAG, "Pending:" + pending.toString());
-            }
-        });
+            });
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "MAINACTIVITY RETURNED");
     }
 
     public void openGame(View view) {
@@ -152,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void click(int pos) {
-        List<String> dummy = new ArrayList<String>();
+        List<Game> dummy = new ArrayList<Game>();
         switch (pos) {
             case 0:
                 dummy = completed;
@@ -169,10 +188,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!dummy.isEmpty()) {
             Intent intent = new Intent(getBaseContext(), GameListActivity.class);
-            intent.putStringArrayListExtra("NAME_LIST", (ArrayList<String>) dummy);
+            intent.putExtra("NAME_LIST", (ArrayList<Game>) dummy);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Esta lista está vacía", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.empty_list, Toast.LENGTH_SHORT).show();
         }
     }
 }

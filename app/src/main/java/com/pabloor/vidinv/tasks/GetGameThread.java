@@ -63,7 +63,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
         }
         Log.d("petition",builder.build().toString());
         Log.d("game", game.getName());
-        Log.d("game", Integer.toString(game.getId()));
+        //Log.d("game", Integer.toString(game.getId()));
         return game;
     }
 

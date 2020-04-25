@@ -34,5 +34,7 @@
     <string name="playing_list">Playing</string>
     <string name="planned_play_list">Planned to play</string>
     <string name="dropped_list">Dropped</string>
+    <string name="not_found_user">Enter a username in Settings in order to save your lists</string>
+    <string name="empty_list">This list is empty</string>
 
 </resources>

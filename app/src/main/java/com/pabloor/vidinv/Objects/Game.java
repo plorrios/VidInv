@@ -6,7 +6,7 @@ public class Game {
 
     //añadir @SerializeName cuando nombre de variable sea distinto al nombre en el json
 
-    private int id;
+    private String id;
     @NonNull
     private String slug;
     @NonNull
@@ -57,14 +57,14 @@ public class Game {
 
     private int list;
 
-    public Game(int id, @NonNull String name, @NonNull String description) {
+    public Game(String id, @NonNull String name, @NonNull String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
     public Game() {
-        this.id = -1;
+        this.id = "-1";
         this.name = "";
         this.description = "";
     }
@@ -74,7 +74,7 @@ public class Game {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
