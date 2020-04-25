@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         if (user == null) {
             Toast.makeText(this, R.string.not_found_user, Toast.LENGTH_SHORT).show();
         } else {
-
             db.collection("users").document(user).collection("games")
                     .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -128,19 +127,19 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
-                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
                                 playing.add(current);
                                 break;
                             case "dropped":
-                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
                                 dropped.add(current);
                                 break;
                             case "completed":
-                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
                                 completed.add(current);
                                 break;
                             case "pending":
-                                current = new Game(documentSnapshot.getLong("id").intValue(), documentSnapshot.getString("name"), documentSnapshot.getString("name"));
+                                current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
                                 pending.add(current);
                                 break;
                         }
@@ -157,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        dummyBD();
         Log.d(TAG, "MAINACTIVITY RETURNED");
     }
 
