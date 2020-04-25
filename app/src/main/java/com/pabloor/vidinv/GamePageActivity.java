@@ -57,9 +57,10 @@ public class GamePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
-        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+
         getSupportActionBar().hide();
 
+        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString("Username", null);
 
         gameId = getIntent().getIntExtra("GAME_ID",-1);
@@ -105,24 +106,24 @@ public class GamePageActivity extends AppCompatActivity {
 
     private void gameInDatabase(final Game game) {
         Query existInDb = db.collection("users/" + username + "/games")
-                .whereEqualTo("id", game.getId());
+                .whereEqualTo("name", game.getName());
 
-        existInDb.get()
+        db.collection("users/" + username + "/games")
+                .whereEqualTo("name", game.getName())
+                .limit(1).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.getData().get("id") == game.getId() + "") {
-                                    activateEditBtn();
-                                    break;
-                                } else {
-                                    activateAddBtn();
-                                }
+                            if (task.getResult().isEmpty()) {
+                                activateAddBtn();
+                            } else {
+                                activateEditBtn();
                             }
                         }
                     }
-        });
+                });
+
     }
 
     public void gameValues(Game game) throws ParseException {
@@ -235,52 +236,34 @@ public class GamePageActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void editGameInDB(final String selectList, final int userScore) {
-        final String[] gameDbId = {""};
-
-        db.collection("users/" + username + "/games")
-                .whereEqualTo("id", currentGame.getId())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                updateGame(document.getId(), selectList, userScore);
-                            }
-                        } else {
-                            Log.d("si", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
-    public void updateGame(String docID, String selectList, int userScore) {
+    private void editGameInDB(String selectList, int userScore) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("list", selectList);
         if (selectList.equals("completed")) {
             updates.put("score", userScore);
+        } else {
+            updates.put("score", "-");
         }
 
-        db.collection("users/" + username + "/games").document(docID)
-                .update(updates)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("si", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("si", "Error updating document", e);
-                    }
-                });
+        db.collection("users/" + username + "/games")
+                .document(currentGame.getId() + "")
+                    .update(updates)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("si", "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("si", "Error updating document", e);
+                        }
+                    });
     }
 
     private void pushGameToDb(String selectList, int userScore) {
         Map<String, Object> savedGame = new HashMap<>();
-        savedGame.put("id", currentGame.getId());
         savedGame.put("name", currentGame.getName());
         savedGame.put("image", currentGame.getBackgroundImage());
         savedGame.put("list", selectList);
@@ -292,19 +275,8 @@ public class GamePageActivity extends AppCompatActivity {
         }
 
         db.collection("users/" + username + "/games")
-                .add(savedGame)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("ADD", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("ADD", "Error adding document", e);
-                    }
-                });
+                .document(currentGame.getId() + "")
+                .set(savedGame);
     }
 
     public void activateAddBtn() {
