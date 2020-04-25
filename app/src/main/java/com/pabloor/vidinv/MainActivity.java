@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        user = preferences.getString("Username", null);
+
+        check4User();
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
@@ -101,12 +101,17 @@ public class MainActivity extends AppCompatActivity {
         gameListview.setAdapter(adapter);
     }
 
+    public void check4User() {
+        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        user = preferences.getString("Username", null);
+    }
+
     public void instantiateList() {
         listOfLists = new ArrayList<String>();
-        listOfLists.add("Completed");
-        listOfLists.add("Dropped");
-        listOfLists.add("Pending");
         listOfLists.add("Playing");
+        listOfLists.add("Pending");
+        listOfLists.add("Dropped");
+        listOfLists.add("Completed");
     }
 
     public void dummyBD() {
@@ -114,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         dropped = new ArrayList<Game>();
         completed = new ArrayList<Game>();
         pending = new ArrayList<Game>();
+
+        check4User();
 
         if (user == null) {
             Toast.makeText(this, R.string.not_found_user, Toast.LENGTH_SHORT).show();
@@ -174,16 +181,16 @@ public class MainActivity extends AppCompatActivity {
         List<Game> dummy = new ArrayList<Game>();
         switch (pos) {
             case 0:
-                dummy = completed;
+                dummy = playing;
                 break;
             case 1:
-                dummy = dropped;
-                break;
-            case 2:
                 dummy = pending;
                 break;
+            case 2:
+                dummy = dropped;
+                break;
             case 3:
-                dummy = playing;
+                dummy = completed;
                 break;
         }
         if (!dummy.isEmpty()) {
