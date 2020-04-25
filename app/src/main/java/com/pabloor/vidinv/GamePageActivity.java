@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,11 +23,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.tasks.GetGameThread;
@@ -42,7 +38,7 @@ import java.util.Map;
 
 public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
-    String title, username, targetList;
+    String title, email, targetList;
     TextView description, gameStudio, gameRelease, redditURL, metacriticURL;
     FloatingActionButton addButton, editButton;
     ImageView gameBanner;
@@ -61,7 +57,7 @@ public class GamePageActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        username = preferences.getString("Username", null);
+        email = preferences.getString("Email", null);
 
         gameId = getIntent().getIntExtra("GAME_ID",-1);
         if (gameId == -1){
@@ -78,7 +74,7 @@ public class GamePageActivity extends AppCompatActivity {
         addButton = findViewById(R.id.add_btn);
         editButton = findViewById(R.id.edit_btn);
 
-        if (username == null) {
+        if (email == null) {
             addButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
         }
@@ -105,10 +101,10 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private void gameInDatabase(final Game game) {
-        Query existInDb = db.collection("users/" + username + "/games")
+        Query existInDb = db.collection("users/" + email + "/games")
                 .whereEqualTo("name", game.getName());
 
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .whereEqualTo("name", game.getName())
                 .limit(1).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -245,7 +241,7 @@ public class GamePageActivity extends AppCompatActivity {
             updates.put("score", "-");
         }
 
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .document(currentGame.getId() + "")
                     .update(updates)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -274,7 +270,7 @@ public class GamePageActivity extends AppCompatActivity {
             savedGame.put("score", "-");
         }
 
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .document(currentGame.getId() + "")
                 .set(savedGame);
     }
