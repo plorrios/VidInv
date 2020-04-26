@@ -17,7 +17,9 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -94,9 +97,7 @@ public class MainActivity extends AppCompatActivity {
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Username");
-        builder.setMessage("Introduce the username you want to use. This can be changed at any time.");
+
         // Set up the input
         final EditText input = new EditText(this);
         int left = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
@@ -107,16 +108,38 @@ public class MainActivity extends AppCompatActivity {
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setHint("Username");
-        builder.setView(input);
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
+
+        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
+                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
+                create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                preferences.edit().putString("Username",input.getText().toString()).apply();
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("textoInput",input.getText().toString());
+                        // TODO Do something
+                        if (input.getText().length()!=0) {
+                            Log.d("textoInput",input.getText().toString());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            preferences.edit().putString("Username", input.getText().toString()).apply();
+                            dialog.dismiss();
+                        }else{                              }
+                        //Dismiss once everything is OK.
+
+                    }
+                });
             }
         });
-        builder.show();
+        dialog.show();
 
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
