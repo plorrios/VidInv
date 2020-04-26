@@ -22,6 +22,9 @@ public class Game implements Serializable {
     private String released;
     private boolean tba;
 
+    private Platforms[] platforms;
+    private Developer[] developers;
+
 
     private String updated;
     private String background_image;
@@ -56,6 +59,7 @@ public class Game implements Serializable {
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
+
 
     private int list;
 
@@ -95,5 +99,10 @@ public class Game implements Serializable {
     public String toString() {
         return "Id: " + this.id + "\nName: " + this.name + "\nDescription: " + this.description
                 + "\nBackground image: " + this.background_image;
+    }
+
+    public Platforms[] getPlatfroms(){ return platforms; }
+    public Developer[] getDevelopers() {
+        return developers;
     }
 }

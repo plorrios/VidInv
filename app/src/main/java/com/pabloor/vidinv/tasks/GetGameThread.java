@@ -6,7 +6,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.pabloor.vidinv.GamePageActivity;
+import com.pabloor.vidinv.Objects.Developer;
 import com.pabloor.vidinv.Objects.Game;
+import com.pabloor.vidinv.Objects.Platform;
+import com.pabloor.vidinv.Objects.Platforms;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +21,8 @@ import java.net.URL;
 import java.text.ParseException;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import kotlin.random.PlatformRandomKt;
 
 public class GetGameThread extends AsyncTask<Void, Void, Game> {
 
@@ -52,7 +57,7 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
             if(connection.getResponseCode() == HttpURLConnection.HTTP_OK){
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 Gson gsonfile =  new Gson();
-                Log.d("",gsonfile.toString());
+                //Log.d("",gsonfile.toString());
                 game = gsonfile.fromJson(reader,Game.class);
                 reader.close();
             }
@@ -64,6 +69,14 @@ public class GetGameThread extends AsyncTask<Void, Void, Game> {
         Log.d("petition",builder.build().toString());
         Log.d("game", game.getName());
         //Log.d("game", Integer.toString(game.getId()));
+        Platforms[] platforms = game.getPlatfroms();
+        for (Platforms p : platforms) {
+            Log.d("platform", p.getPlatform().getName());
+        }
+        Developer[] developers = game.getDevelopers();
+        for (Developer d : developers) {
+            Log.d("Developer", d.getName());
+        }
         return game;
     }
 
