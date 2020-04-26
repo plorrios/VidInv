@@ -22,6 +22,9 @@ public class Game implements Serializable {
     private String released;
     private boolean tba;
 
+    private Platforms[] platforms;
+    private Developer[] developers;
+
 
     private String updated;
     private String background_image;
@@ -41,7 +44,7 @@ public class Game implements Serializable {
     private int creatorsCount;
     private int achievementsCount;
     private String parentAchievementsCount;
-    private String redditUrl;
+    private String reddit_url;
     private String redditName;
     private String redditDescription;
     private String redditLogo;
@@ -52,10 +55,11 @@ public class Game implements Serializable {
     private int ratingsCount;
     private int suggestionsCount;
     private String[] alternativeNames;
-    private String metacriticURL;
+    private String metacritic_url;
     private int parentsCount;
     private int additionsCount;
     private int gameSeriesCount;
+
 
     private int list;
 
@@ -88,12 +92,17 @@ public class Game implements Serializable {
 
     public String getSlug() { return slug; }
 
-    public String getRedditURL() { return redditUrl; }
+    public String getRedditURL() { return reddit_url; }
 
-    public String getMetacriticURL() { return metacriticURL; }
+    public String getMetacriticURL() { return metacritic_url; }
 
     public String toString() {
         return "Id: " + this.id + "\nName: " + this.name + "\nDescription: " + this.description
                 + "\nBackground image: " + this.background_image;
+    }
+
+    public Platforms[] getPlatfroms(){ return platforms; }
+    public Developer[] getDevelopers() {
+        return developers;
     }
 }

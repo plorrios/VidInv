@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             preferences.edit().putString("Email",account.getEmail()).apply();
             preferences.edit().putString("Username",account.getDisplayName()).apply();
+            //Log.d("Email",preferences.getString("Email","nul"));
         }
         //updateUI(account);
     }
@@ -188,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             preferences.edit().putString("Email",user.getEmail()).apply();
                             preferences.edit().putString("Username",user.getDisplayName()).apply();
+                            //Log.d("Email",preferences.getString("Email","nul"));
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         check4User();
 
         if (user == null) {
-            Toast.makeText(this, R.string.not_found_user, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, R.string.not_found_user, Toast.LENGTH_SHORT).show();
         } else {
             db.collection("users").document(user).collection("games")
                     .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
