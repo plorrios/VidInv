@@ -70,6 +70,7 @@
                         android:id="@+id/gameDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:text="@string/description_text" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -139,10 +140,17 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/pinLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

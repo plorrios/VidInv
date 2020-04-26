@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -23,11 +24,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.pabloor.vidinv.Objects.Developer;
 import com.pabloor.vidinv.Objects.Game;
+import com.pabloor.vidinv.Objects.Platforms;
 import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +47,7 @@ public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
     String title, email, targetList;
     TextView description, gameStudio, gameRelease, redditURL, metacriticURL;
+    ChipGroup chipsLayout;
     FloatingActionButton addButton, editButton;
     ImageView gameBanner;
     Game currentGame;
@@ -66,8 +73,10 @@ public class GamePageActivity extends AppCompatActivity {
         }
 
         collapsingToolbarLayout = findViewById(R.id.collapsToolbar);
+        chipsLayout = findViewById(R.id.chipLayout);
         description = findViewById(R.id.gameDescription);
         gameRelease = findViewById(R.id.gameRelease);
+        gameStudio = findViewById(R.id.dev_name);
         gameBanner = findViewById(R.id.appbarImage);
         redditURL = findViewById(R.id.reddit_link);
         metacriticURL = findViewById(R.id.metacritic_link);
@@ -127,6 +136,16 @@ public class GamePageActivity extends AppCompatActivity {
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
         description.setText(htmlToText(game.getDescription()));
 
+        Developer[] devs = game.getDevelopers();
+        gameStudio.setText(devs[0].getName());
+
+        Platforms[] platforms = game.getPlatfroms();
+        for (Platforms p : platforms) {
+            Chip c = new Chip(this);
+            c.setText(p.getPlatform().getName());
+            chipsLayout.addView(c);
+        }
+
         if (game.getReleaseDate() != null) {
             gameRelease.setText(dataFormat(game.getReleaseDate()));
         } else {
@@ -165,7 +184,7 @@ public class GamePageActivity extends AppCompatActivity {
 
     private void selectListAlert(final boolean edit) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(R.string.dialog_list_title);
         builder.setMessage(R.string.dialog_list_summary);
 
