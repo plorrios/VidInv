@@ -1,6 +1,7 @@
 package com.pabloor.vidinv;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -8,11 +9,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -47,6 +56,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.pabloor.vidinv.Adapters.ListOfListsAdapter;
+
+import io.opencensus.resource.Resource;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -85,6 +96,38 @@ public class MainActivity extends AppCompatActivity {
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
+
+        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
+        final EditText input = (EditText) dialogView.findViewById(R.id.input);
+        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
+                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
+                create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("textoInput",input.getText().toString());
+                        // TODO Do something
+                        if (input.getText().length()!=0) {
+                            Log.d("textoInput",input.getText().toString());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            preferences.edit().putString("Username", input.getText().toString()).apply();
+                            dialog.dismiss();
+                        }else{                              }
+                        //Dismiss once everything is OK.
+
+                    }
+                });
+            }
+        });
+        dialog.show();
 
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
@@ -148,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Account",account.getDisplayName());
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             preferences.edit().putString("Email",account.getEmail()).apply();
-            preferences.edit().putString("Username",account.getDisplayName()).apply();
+            //preferences.edit().putString("Username",account.getDisplayName()).apply();
             //Log.d("Email",preferences.getString("Email","nul"));
         }
         //updateUI(account);
@@ -188,7 +231,12 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             preferences.edit().putString("Email",user.getEmail()).apply();
+
+
                             preferences.edit().putString("Username",user.getDisplayName()).apply();
+
+
+
                             //Log.d("Email",preferences.getString("Email","nul"));
                             //updateUI(user);
                         } else {

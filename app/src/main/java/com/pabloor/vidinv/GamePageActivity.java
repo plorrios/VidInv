@@ -7,34 +7,33 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.pabloor.vidinv.Objects.Developer;
 import com.pabloor.vidinv.Objects.Game;
+import com.pabloor.vidinv.Objects.Platforms;
 import com.pabloor.vidinv.tasks.GetGameThread;
 import com.squareup.picasso.Picasso;
 
@@ -46,8 +45,9 @@ import java.util.Map;
 
 public class GamePageActivity extends AppCompatActivity {
     GetGameThread task;
-    String title, username, targetList;
+    String title, email, targetList;
     TextView description, gameStudio, gameRelease, redditURL, metacriticURL;
+    ChipGroup chipsLayout;
     FloatingActionButton addButton, editButton;
     ImageView gameBanner;
     Game currentGame;
@@ -65,7 +65,7 @@ public class GamePageActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        username = preferences.getString("Username", null);
+        email = preferences.getString("Email", null);
 
         gameId = getIntent().getIntExtra("GAME_ID",-1);
         if (gameId == -1){
@@ -73,16 +73,17 @@ public class GamePageActivity extends AppCompatActivity {
         }
 
         collapsingToolbarLayout = findViewById(R.id.collapsToolbar);
+        chipsLayout = findViewById(R.id.chipLayout);
         description = findViewById(R.id.gameDescription);
-        gameStudio = findViewById(R.id.studioName);
         gameRelease = findViewById(R.id.gameRelease);
+        gameStudio = findViewById(R.id.dev_name);
         gameBanner = findViewById(R.id.appbarImage);
         redditURL = findViewById(R.id.reddit_link);
         metacriticURL = findViewById(R.id.metacritic_link);
         addButton = findViewById(R.id.add_btn);
         editButton = findViewById(R.id.edit_btn);
 
-        if (username == null) {
+        if (email == null) {
             addButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
         }
@@ -91,8 +92,6 @@ public class GamePageActivity extends AppCompatActivity {
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
     }
-
-
 
     private void startTask(GamePageActivity v) {
         task = new GetGameThread(this, gameId);
@@ -111,10 +110,7 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private void gameInDatabase(final Game game) {
-        Query existInDb = db.collection("users/" + username + "/games")
-                .whereEqualTo("name", game.getName());
-
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .whereEqualTo("name", game.getName())
                 .limit(1).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -139,7 +135,23 @@ public class GamePageActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
         description.setText(htmlToText(game.getDescription()));
-        gameRelease.setText(dataFormat(game.getReleaseDate()));
+
+        Developer[] devs = game.getDevelopers();
+        gameStudio.setText(devs[0].getName());
+
+        Platforms[] platforms = game.getPlatfroms();
+        for (Platforms p : platforms) {
+            Chip c = new Chip(this);
+            c.setText(p.getPlatform().getName());
+            chipsLayout.addView(c);
+        }
+
+        if (game.getReleaseDate() != null) {
+            gameRelease.setText(dataFormat(game.getReleaseDate()));
+        } else {
+            gameRelease.setText("To Be Announced");
+        }
+
         redditURL.setText(game.getRedditURL());
         metacriticURL.setText(game.getMetacriticURL());
     }
@@ -172,7 +184,7 @@ public class GamePageActivity extends AppCompatActivity {
 
     private void selectListAlert(final boolean edit) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(R.string.dialog_list_title);
         builder.setMessage(R.string.dialog_list_summary);
 
@@ -250,7 +262,7 @@ public class GamePageActivity extends AppCompatActivity {
             updates.put("score", "-");
         }
 
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .document(currentGame.getId() + "")
                     .update(updates)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -265,6 +277,12 @@ public class GamePageActivity extends AppCompatActivity {
                             Log.w("si", "Error updating document", e);
                         }
                     });
+
+        Toast.makeText(
+                this,
+                "Game updated, saved at " + selectList + "list",
+                Toast.LENGTH_LONG).show();
+
     }
 
     private void pushGameToDb(String selectList, int userScore) {
@@ -279,9 +297,13 @@ public class GamePageActivity extends AppCompatActivity {
             savedGame.put("score", "-");
         }
 
-        db.collection("users/" + username + "/games")
+        db.collection("users/" + email + "/games")
                 .document(currentGame.getId() + "")
                 .set(savedGame);
+
+        Toast.makeText(this,
+                "Game saved at " + selectList + "list",
+                Toast.LENGTH_LONG).show();
     }
 
     public void activateAddBtn() {
