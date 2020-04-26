@@ -1,5 +1,6 @@
 package com.pabloor.vidinv;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +41,7 @@ public class GameListActivity extends AppCompatActivity {
         username = preferences.getString("Username", null);
 
         mainList = (ArrayList<Game>) getIntent().getSerializableExtra("NAME_LIST");
+        Log.d("GameListActivity", mainList.toString());
 
         RecyclerView gameList = findViewById(R.id.gameList);
         gameList.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -47,12 +50,15 @@ public class GameListActivity extends AppCompatActivity {
         GameListAdapter gadapt = new GameListAdapter(mainList,  new GameListAdapter.IClickListener() {
             @Override
             public void onClickListener(int position) {
-                showToast();
+                //showToast(position);
+                Intent intent = new Intent(GameListActivity.this, GamePageActivity.class);
+                intent.putExtra("GAME_ID", mainList.get(position).getId());
+                startActivity(intent);
             }
         }, new GameListAdapter.ILongClickListener() {
             @Override
             public void onClickLongListener(int position) {
-                showToast();
+                //showToast();
             }
         });
         gameList.setAdapter(gadapt);
@@ -67,7 +73,7 @@ public class GameListActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        showToast();
+                        //showToast();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -78,7 +84,7 @@ public class GameListActivity extends AppCompatActivity {
                 });
     }
 
-    public void showToast() {
-        Toast.makeText(this, "Juego eliminado", Toast.LENGTH_LONG).show();
+    public void showToast(int i) {
+        Toast.makeText(this, "Juego: " + mainList.get(i).getId(), Toast.LENGTH_LONG).show();
     }
 }

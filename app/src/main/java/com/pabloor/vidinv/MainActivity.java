@@ -1,17 +1,26 @@
 package com.pabloor.vidinv;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -46,6 +56,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.pabloor.vidinv.Adapters.ListOfListsAdapter;
+
+import io.opencensus.resource.Resource;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -74,22 +86,54 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String user;
 
+    private LinearLayoutManager linearLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        user = preferences.getString("Username", null);
-
-        check4User();
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
 
+        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
+        final EditText input = (EditText) dialogView.findViewById(R.id.input);
+        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
+                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
+                create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("textoInput",input.getText().toString());
+                        // TODO Do something
+                        if (input.getText().length()!=0) {
+                            Log.d("textoInput",input.getText().toString());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            preferences.edit().putString("Username", input.getText().toString()).apply();
+                            dialog.dismiss();
+                        }else{                              }
+                        //Dismiss once everything is OK.
+
+                    }
+                });
+            }
+        });
+        dialog.show();
+
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
         SignInGoogle();
+
+        check4User();
 
         bottom.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateList();
 
-        //Aquí debería ir el método de coger los nombres de las diferentes listas de un usuario desde la base de datos
         dummyBD();
-
+        linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
-        gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        gameListview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        gameListview.setLayoutManager(new GridLayoutManager(this, 2));
+        gameListview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
 
         ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists,  new ListOfListsAdapter.IClickListener() {
             @Override
@@ -131,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
     public void check4User() {
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
         user = preferences.getString("Username", null);
+        if (user != null) Log.d(TAG, "User is:" + user.toString());
     }
-
 
     private void SignInGoogle()
     {
@@ -147,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Account",account.getDisplayName());
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             preferences.edit().putString("Email",account.getEmail()).apply();
-            preferences.edit().putString("Username",account.getDisplayName()).apply();
+            //preferences.edit().putString("Username",account.getDisplayName()).apply();
             //Log.d("Email",preferences.getString("Email","nul"));
         }
         //updateUI(account);
@@ -162,17 +206,13 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == 1) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // ...
             }
         }
     }
@@ -191,7 +231,12 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             preferences.edit().putString("Email",user.getEmail()).apply();
+
+
                             preferences.edit().putString("Username",user.getDisplayName()).apply();
+
+
+
                             //Log.d("Email",preferences.getString("Email","nul"));
                             //updateUI(user);
                         } else {
@@ -206,9 +251,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -226,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void instantiateList() {
         listOfLists = new ArrayList<String>();
         listOfLists.add("Playing");
@@ -236,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void dummyBD() {
+        Log.d(TAG, "Retrieving user data...");
         playing = new ArrayList<Game>();
         dropped = new ArrayList<Game>();
         completed = new ArrayList<Game>();
@@ -256,19 +298,19 @@ public class MainActivity extends AppCompatActivity {
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                playing.add(current);
+                                if (!checkGameInList(playing, current)) playing.add(current);
                                 break;
                             case "dropped":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                dropped.add(current);
+                                if (!checkGameInList(dropped, current)) dropped.add(current);
                                 break;
                             case "completed":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                completed.add(current);
+                                if (!checkGameInList(completed, current)) completed.add(current);
                                 break;
                             case "pending":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                pending.add(current);
+                                if (!checkGameInList(pending, current)) pending.add(current);
                                 break;
                         }
                     }
@@ -279,6 +321,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public boolean checkGameInList(List<Game> list, Game game) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == game.getId()) return true;
+        }
+        return false;
     }
 
     @Override
@@ -315,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (!dummy.isEmpty()) {
+            Log.d(TAG + " - click()", dummy.toString());
             Intent intent = new Intent(getBaseContext(), GameListActivity.class);
             intent.putExtra("NAME_LIST", (ArrayList<Game>) dummy);
             startActivity(intent);

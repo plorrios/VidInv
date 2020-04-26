@@ -30,7 +30,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View firstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_item, null);
+        View firstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_game, null);
         final GameListAdapter.ViewHolder vh = new GameListAdapter.ViewHolder(firstView);
 
         firstView.setOnClickListener(new View.OnClickListener() {
@@ -68,8 +68,8 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
 
         public ViewHolder (View view) {
             super(view);
-            gameItem = (TextView) view.findViewById(R.id.game_item);
-            gameImage = (ImageView) view.findViewById(R.id.game_item_image);
+            gameItem = (TextView) view.findViewById(R.id.GameSearchedTitle);
+            gameImage = (ImageView) view.findViewById(R.id.GameSearchedImage);
         }
     }
 
