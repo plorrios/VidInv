@@ -6,30 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".GameListActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/newListButton"
-        style="@style/Widget.Design.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_add_black_24dp"
-        app:layout_anchor="@id/bottomAppBar1"
-        app:layout_anchorGravity="top|center"
-        android:onClick="openGame"/>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar1"
-        style="@style/Widget.MaterialComponents.BottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_anchor="@+id/relativeLayout_game"
-        app:layout_anchorGravity="bottom|center"
-        app:fabCradleVerticalOffset="0dp"
-        />
-
     <RelativeLayout
         android:id="@+id/relativeLayout_game"
         android:layout_width="match_parent"
