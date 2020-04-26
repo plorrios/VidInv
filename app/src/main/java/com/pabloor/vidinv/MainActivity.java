@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
 
-    Searchable fragment1;
-    Searchable fragment2;
-    Searchable fragment3;
-    Searchable fragment4;
+    Searchable droppedfragment;
+    Searchable playingFragment;
+    Searchable pendingFragment;
+    Searchable completefragment;
 
     //Lista de los nombres de las listas
     List<String> listOfLists;
@@ -102,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
 
-        fragment1 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment1);
-        fragment2 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment2);
-        fragment3 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
-        fragment4 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
+        droppedfragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment1);
+        playingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment2);
+        pendingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
+        completefragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
 
 
         View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
@@ -326,10 +326,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     Log.d(TAG, "Playing:" + playing.toString());
-                    if (playing != null){fragment1.fillWithList(playing);}
+                    if (playing != null){playingFragment.fillWithList(playing);}
                     Log.d(TAG, "Dropped:" + dropped.toString());
+                    if (dropped != null){droppedfragment.fillWithList(dropped);}
                     Log.d(TAG, "Completed:" + completed.toString());
+                    if (completed != null){completefragment.fillWithList(completed);}
                     Log.d(TAG, "Pending:" + pending.toString());
+                    if (pending != null){pendingFragment.fillWithList(pending);}
                 }
             });
         }
