@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/nameList"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:gravity="center"
         android:textAllCaps="false"
         android:textSize="18sp"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

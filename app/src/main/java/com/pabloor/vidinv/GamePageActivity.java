@@ -129,7 +129,6 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
 
     public void gameValues(Game game) throws ParseException {

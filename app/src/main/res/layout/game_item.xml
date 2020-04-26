@@ -9,10 +9,10 @@
     <TextView
         android:id="@+id/game_item"
         android:layout_width="305dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.669"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
     <ImageView
         android:id="@+id/game_item_image"
         android:layout_width="72dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         app:layout_constraintEnd_toStartOf="@+id/gameList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

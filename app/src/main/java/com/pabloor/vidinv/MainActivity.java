@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,15 +75,13 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String user;
 
+    private LinearLayoutManager linearLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        user = preferences.getString("Username", null);
-
-        check4User();
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
@@ -90,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
         SignInGoogle();
+
+        check4User();
 
         bottom.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,12 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateList();
 
-        //Aquí debería ir el método de coger los nombres de las diferentes listas de un usuario desde la base de datos
         dummyBD();
-
+        linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
-        gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        gameListview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        gameListview.setLayoutManager(new GridLayoutManager(this, 2));
+        gameListview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
 
         ListOfListsAdapter adapter = new ListOfListsAdapter(this, R.layout.list_item, listOfLists,  new ListOfListsAdapter.IClickListener() {
             @Override
@@ -131,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
     public void check4User() {
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
         user = preferences.getString("Username", null);
+        if (user != null) Log.d(TAG, "User is:" + user.toString());
     }
-
 
     private void SignInGoogle()
     {
@@ -161,17 +162,13 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == 1) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // ...
             }
         }
     }
@@ -205,9 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
-
-
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -223,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
             //updateUI(null);
         }
     }
-
 
     public void instantiateList() {
         listOfLists = new ArrayList<String>();
@@ -255,19 +248,19 @@ public class MainActivity extends AppCompatActivity {
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                playing.add(current);
+                                if (!checkGameInList(playing, current)) playing.add(current);
                                 break;
                             case "dropped":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                dropped.add(current);
+                                if (!checkGameInList(dropped, current)) dropped.add(current);
                                 break;
                             case "completed":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                completed.add(current);
+                                if (!checkGameInList(completed, current)) completed.add(current);
                                 break;
                             case "pending":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
-                                pending.add(current);
+                                if (!checkGameInList(pending, current)) pending.add(current);
                                 break;
                         }
                     }
@@ -278,6 +271,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public boolean checkGameInList(List<Game> list, Game game) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == game.getId()) return true;
+        }
+        return false;
     }
 
     @Override
@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (!dummy.isEmpty()) {
-            Log.d(TAG, dummy.toString());
+            Log.d(TAG + " - click()", dummy.toString());
             Intent intent = new Intent(getBaseContext(), GameListActivity.class);
             intent.putExtra("NAME_LIST", (ArrayList<Game>) dummy);
             startActivity(intent);
