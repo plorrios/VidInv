@@ -72,6 +72,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
     }
 
     public void removeTopGame(){
+        if (games.size()!=0)
         games.remove(games.size()-1);
     }
 
