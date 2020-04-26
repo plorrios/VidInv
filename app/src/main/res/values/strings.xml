@@ -14,15 +14,16 @@
         iaculis ut tristique nec, dapibus eu dui.
     </string>
     <string name="details_title">Details</string>
-    <string name="studio_title">Game Studio</string>
-    <string name="studio_name">Game Studio example name</string>
+    <string name="length_title">Game Length</string>
+    <string name="score_title">Community Score</string>
     <string name="release_title">Release date</string>
     <string name="release_date">29/01/2019</string>
+    <string name="devs_title">Developer</string>
     <string name="links_title">Links</string>
     <string name="textfield_label">text</string>
     <string name="textfield_banner">Generic label</string>
     <string name="item_list_content_desc">Item from a list</string>
-    <string name="search_hint">Search videogames</string>
+    <string name="search_hint">Search video games</string>
 
     <string name="username_title">Username</string>
     <string name="username_desc">Name with which you will be know in the app</string>

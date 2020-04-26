@@ -12,15 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -70,7 +67,6 @@ public class GamePageActivity extends AppCompatActivity {
 
         collapsingToolbarLayout = findViewById(R.id.collapsToolbar);
         description = findViewById(R.id.gameDescription);
-        gameStudio = findViewById(R.id.studioName);
         gameRelease = findViewById(R.id.gameRelease);
         gameBanner = findViewById(R.id.appbarImage);
         redditURL = findViewById(R.id.reddit_link);
@@ -87,8 +83,6 @@ public class GamePageActivity extends AppCompatActivity {
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
     }
-
-
 
     private void startTask(GamePageActivity v) {
         task = new GetGameThread(this, gameId);
@@ -107,9 +101,6 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private void gameInDatabase(final Game game) {
-        Query existInDb = db.collection("users/" + email + "/games")
-                .whereEqualTo("name", game.getName());
-
         db.collection("users/" + email + "/games")
                 .whereEqualTo("name", game.getName())
                 .limit(1).get()
@@ -125,7 +116,6 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
 
     public void gameValues(Game game) throws ParseException {
@@ -136,7 +126,13 @@ public class GamePageActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(title.subSequence(0, title.length()));
         Picasso.get().load(game.getBackgroundImage()).into(gameBanner);
         description.setText(htmlToText(game.getDescription()));
-        gameRelease.setText(dataFormat(game.getReleaseDate()));
+
+        if (game.getReleaseDate() != null) {
+            gameRelease.setText(dataFormat(game.getReleaseDate()));
+        } else {
+            gameRelease.setText("To Be Announced");
+        }
+
         redditURL.setText(game.getRedditURL());
         metacriticURL.setText(game.getMetacriticURL());
     }
@@ -262,6 +258,12 @@ public class GamePageActivity extends AppCompatActivity {
                             Log.w("si", "Error updating document", e);
                         }
                     });
+
+        Toast.makeText(
+                this,
+                "Game updated, saved at " + selectList + "list",
+                Toast.LENGTH_LONG).show();
+
     }
 
     private void pushGameToDb(String selectList, int userScore) {
@@ -279,6 +281,10 @@ public class GamePageActivity extends AppCompatActivity {
         db.collection("users/" + email + "/games")
                 .document(currentGame.getId() + "")
                 .set(savedGame);
+
+        Toast.makeText(this,
+                "Game saved at " + selectList + "list",
+                Toast.LENGTH_LONG).show();
     }
 
     public void activateAddBtn() {
