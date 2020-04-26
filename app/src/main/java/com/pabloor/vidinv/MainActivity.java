@@ -97,20 +97,8 @@ public class MainActivity extends AppCompatActivity {
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
 
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        int left = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-        int right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-        int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        int bottomnumber = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        input.setPadding(left, top, right, bottomnumber);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint("Username");
-
         View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
-
+        final EditText input = (EditText) dialogView.findViewById(R.id.input);
         final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
                 setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
                 create();
