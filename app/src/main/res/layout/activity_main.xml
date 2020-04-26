@@ -50,24 +50,28 @@
                 android:weightSum="1">
 
                 <TextView
-                    android:id="@+id/editText"
+                    android:id="@+id/playingButtonText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:ems="10"
                     android:text="@string/playing_list"
                     android:paddingBottom="10dp"
-                    style="@android:style/Widget.EditText"/>
+                    style="@android:style/Widget.EditText"
+                    android:onClick="click"
+                    android:clickable="true"/>
 
                 <TextView
-                    android:id="@+id/editText2"
+                    android:id="@+id/pendingButtonText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:ems="10"
                     android:text="@string/planned_play_list"
                     android:paddingBottom="10dp"
-                    style="@android:style/Widget.EditText"/>
+                    style="@android:style/Widget.EditText"
+                    android:onClick="click"
+                    android:clickable="true"/>
             </LinearLayout>
 
             <LinearLayout
@@ -108,24 +112,28 @@
                 android:weightSum="1">
 
                 <TextView
-                    android:id="@+id/editText3"
+                    android:id="@+id/completeButtonText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:ems="10"
                     android:text="@string/complete_list"
                     android:paddingBottom="10dp"
-                    style="@android:style/Widget.EditText"/>
+                    style="@android:style/Widget.EditText"
+                    android:onClick="click"
+                    android:clickable="true"/>
 
                 <TextView
-                    android:id="@+id/editText4"
+                    android:id="@+id/droppedButtonText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:ems="10"
                     android:text="@string/dropped_list"
                     android:paddingBottom="10dp"
-                    style="@android:style/Widget.EditText"/>
+                    style="@android:style/Widget.EditText"
+                    android:onClick="click"
+                    android:clickable="true"/>
             </LinearLayout>
 
             <LinearLayout

@@ -362,19 +362,21 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void click(int pos) {
+    public void click(android.view.View view) {
         List<Game> dummy = new ArrayList<Game>();
+        int pos = view.getId();
+        Log.d("position", Integer.toString(pos));
         switch (pos) {
-            case 0:
+            case R.id.playingButtonText:
                 dummy = playing;
                 break;
-            case 1:
+            case R.id.pendingButtonText:
                 dummy = pending;
                 break;
-            case 2:
+            case R.id.droppedButtonText:
                 dummy = dropped;
                 break;
-            case 3:
+            case R.id.completeButtonText:
                 dummy = completed;
                 break;
         }
