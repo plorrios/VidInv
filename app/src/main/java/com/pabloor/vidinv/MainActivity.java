@@ -71,13 +71,18 @@ public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
 
+    Searchable fragment1;
+    Searchable fragment2;
+    Searchable fragment3;
+    Searchable fragment4;
+
     //Lista de los nombres de las listas
     List<String> listOfLists;
     //Lista local de las listas de un determinado usuario
-    List<Game> pending;
-    List<Game> completed;
-    List<Game> dropped;
-    List<Game> playing;
+    ArrayList<Game> pending;
+    ArrayList<Game> completed;
+    ArrayList<Game> dropped;
+    ArrayList<Game> playing;
 
     BottomAppBar bottom;
     FloatingActionButton fab;
@@ -96,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
+
+        fragment1 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment1);
+        fragment2 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment2);
+        fragment3 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
+        fragment4 = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
+
 
         View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
         final EditText input = (EditText) dialogView.findViewById(R.id.input);
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         instantiateList();
 
         dummyBD();
-        linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
+        /*linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameListview.setLayoutManager(new GridLayoutManager(this, 2));
@@ -162,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 click(position);
             }
         });
-        gameListview.setAdapter(adapter);
+        gameListview.setAdapter(adapter);*/
     }
 
     @Override
@@ -315,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     Log.d(TAG, "Playing:" + playing.toString());
+                    if (playing != null){fragment1.fillWithList(playing);}
                     Log.d(TAG, "Dropped:" + dropped.toString());
                     Log.d(TAG, "Completed:" + completed.toString());
                     Log.d(TAG, "Pending:" + pending.toString());

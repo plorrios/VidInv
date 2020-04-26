@@ -29,6 +29,7 @@ import com.pabloor.vidinv.Objects.GamesList;
 import com.pabloor.vidinv.tasks.GetGameListThread;
 import com.pabloor.vidinv.tasks.GetGameThread;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class Searchable extends Fragment {
         adapter = new GamesListAdapter(getActivity(), gamesList, new GamesListAdapter.InterfaceClick() {
             @Override
             public void OnInterfaceClick(int position) {
-                if (adapter.GetGame(position) == null) {
+                if (adapter.GetGame(position) == null && getActivity() instanceof  SearchActivity) {
                     Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
                 }
                         Intent intent = new Intent(getActivity(), GamePageActivity.class);
@@ -106,6 +107,18 @@ public class Searchable extends Fragment {
         return rootView;
     }
 
+    public void fillWithList(ArrayList<Game> games){
+
+        Game[] gamesArray = new Game[games.size()];
+        games.toArray(gamesArray);
+        gamesList = new GamesList(gamesArray);
+        AddGames(gamesList);
+        if (games.size()<40 * page){
+            noMoreGames=true;
+        }
+
+    }
+
     public void startSearch(String s){
 
         query = s;
@@ -140,8 +153,12 @@ public class Searchable extends Fragment {
     {
         if (gamesL.GetGames().length==0)
         {
-            ((SearchActivity)getActivity()).finishedTask();
-            Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
+            if (getActivity() instanceof SearchActivity)
+            {
+                ((SearchActivity)getActivity()).finishedTask();
+                Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
+            }
+
             return;
         }
 
@@ -158,7 +175,8 @@ public class Searchable extends Fragment {
                 adapter.ChangeGames(gamesL);
                 adapter.notifyDataSetChanged();
                 Log.d("error",adapter.GetGames()[0].getName());
-                ((SearchActivity)getActivity()).finishedTask();
+                if (getActivity() instanceof SearchActivity)
+                { ((SearchActivity)getActivity()).finishedTask(); }
                 isLoading = false;
             }
         }
