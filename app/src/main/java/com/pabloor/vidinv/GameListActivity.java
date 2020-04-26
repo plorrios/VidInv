@@ -1,9 +1,11 @@
 package com.pabloor.vidinv;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Adapters.GameListAdapter;
 import com.pabloor.vidinv.Objects.Game;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,8 @@ public class GameListActivity extends AppCompatActivity {
     ArrayList<Game> mainList;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String username;
+    GameListAdapter gadapt;
+    RecyclerView gameList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +48,11 @@ public class GameListActivity extends AppCompatActivity {
         mainList = (ArrayList<Game>) getIntent().getSerializableExtra("NAME_LIST");
         Log.d("GameListActivity", mainList.toString());
 
-        RecyclerView gameList = findViewById(R.id.gameList);
+        gameList = findViewById(R.id.gameList);
         gameList.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        GameListAdapter gadapt = new GameListAdapter(mainList,  new GameListAdapter.IClickListener() {
+        gadapt = new GameListAdapter(mainList,  new GameListAdapter.IClickListener() {
             @Override
             public void onClickListener(int position) {
                 //showToast(position);
@@ -57,31 +62,63 @@ public class GameListActivity extends AppCompatActivity {
             }
         }, new GameListAdapter.ILongClickListener() {
             @Override
-            public void onClickLongListener(int position) {
-                //showToast();
+            public void onClickLongListener(final int position) {
+                new MaterialAlertDialogBuilder(GameListActivity.this)
+                        .setTitle(R.string.deleteTitle)
+                        .setMessage(R.string.deleteSup)
+                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteGame(mainList.get(position).getId(), position);
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Nothing. Hi.
+                            }
+                        })
+                        .show();
             }
         });
         gameList.setAdapter(gadapt);
-
-        //String msg = mainList.isEmpty() ? "Empty list" : "Clicked on " + mainList.get(0).toString();
-        //Comprobación: Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void deleteGame(int id) {
+    private void deleteGame(int id, final int pos) {
         db.collection("users/" + username + "/games").document(id + "")
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        //showToast();
+                        //gadapt.notifyDataSetChanged();
+                        mainList.remove(pos);
+                        gameList.removeViewAt(pos);
+                        gadapt.notifyItemRemoved(pos);
+                        gadapt.notifyItemRangeChanged(pos, mainList.size());
+                        showToastString(R.string.deleteConf);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("error","Juego no eliminado");
+                        showToastString(R.string.deleteFailure);
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gadapt.notifyDataSetChanged();
+    }
+
+    public void openGame(View view) {
+        Intent intent = new Intent(GameListActivity.this, SearchActivity.class);
+        startActivity(intent);
+    }
+
+    public void showToastString(int s) {
+        Toast.makeText(this, getString(s), Toast.LENGTH_LONG).show();
     }
 
     public void showToast(int i) {
