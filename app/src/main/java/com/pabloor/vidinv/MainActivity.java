@@ -1,6 +1,7 @@
 package com.pabloor.vidinv;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -8,11 +9,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,6 +53,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.pabloor.vidinv.Adapters.ListOfListsAdapter;
+
+import io.opencensus.resource.Resource;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -85,6 +93,30 @@ public class MainActivity extends AppCompatActivity {
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Username");
+        builder.setMessage("Introduce the username you want to use. This can be changed at any time.");
+        // Set up the input
+        final EditText input = new EditText(this);
+        int left = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        int right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        int bottomnumber = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        input.setPadding(left, top, right, bottomnumber);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Username");
+        builder.setView(input);
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                preferences.edit().putString("Username",input.getText().toString()).apply();
+            }
+        });
+        builder.show();
 
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
@@ -148,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Account",account.getDisplayName());
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             preferences.edit().putString("Email",account.getEmail()).apply();
-            preferences.edit().putString("Username",account.getDisplayName()).apply();
+            //preferences.edit().putString("Username",account.getDisplayName()).apply();
             //Log.d("Email",preferences.getString("Email","nul"));
         }
         //updateUI(account);
@@ -188,7 +220,12 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             preferences.edit().putString("Email",user.getEmail()).apply();
+
+
                             preferences.edit().putString("Username",user.getDisplayName()).apply();
+
+
+
                             //Log.d("Email",preferences.getString("Email","nul"));
                             //updateUI(user);
                         } else {

@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Settings"></activity>
-        <!-- this is the searchable activity; it performs searches -->
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".Settings" /> <!-- this is the searchable activity; it performs searches -->
         <activity
             android:name=".Searchable"
             android:launchMode="singleTop">
@@ -41,7 +41,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".Searchable" />
         </activity>
-        <activity android:name=".GameListActivity"></activity>
+        <activity android:name=".GameListActivity" />
     </application>
 
 </manifest>

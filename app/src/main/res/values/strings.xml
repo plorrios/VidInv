@@ -23,6 +23,7 @@
     <string name="textfield_banner">Generic label</string>
     <string name="item_list_content_desc">Item from a list</string>
     <string name="search_hint">Search videogames</string>
+    <string name="hint_username">Username</string>
 
     <string name="username_title">Username</string>
     <string name="username_desc">Name with which you will be know in the app</string>
