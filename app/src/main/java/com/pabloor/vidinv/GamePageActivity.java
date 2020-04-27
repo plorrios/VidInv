@@ -286,7 +286,7 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     });
 
-        incrementAtEdit(oldListValue(), selectList);
+        //incrementAtEdit(oldListValue(), selectList);
 
         Toast.makeText(
                 this,
@@ -311,7 +311,7 @@ public class GamePageActivity extends AppCompatActivity {
                 .document(currentGame.getId() + "")
                 .set(savedGame);
 
-        incrementGivenCont(selectList);
+        //incrementGivenCont(selectList);
 
         Toast.makeText(this,
                 "Game saved at " + selectList + " list",
