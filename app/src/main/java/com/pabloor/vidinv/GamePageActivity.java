@@ -308,7 +308,12 @@ public class GamePageActivity extends AppCompatActivity {
                 .document(currentGame.getId() + "")
                 .set(savedGame);
 
+        Map<String, Object> increment = new HashMap<>();
 
+        
+
+        /*db.collection("users").document(email).
+                update()*/
 
         Toast.makeText(this,
                 "Game saved at " + selectList + " list",

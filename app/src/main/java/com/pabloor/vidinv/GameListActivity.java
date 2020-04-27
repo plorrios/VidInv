@@ -85,7 +85,7 @@ public class GameListActivity extends AppCompatActivity {
     }
 
     private void deleteGame(int id, final int pos) {
-        db.collection("users/" + username + "/games").document(id + "")
+        db.collection("users/" + username + "/games").document(String.valueOf(id))
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
