@@ -186,4 +186,9 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
 
     }
 
+    public void clear(){
+        games.clear();
+        notifyDataSetChanged();
+    }
+
 }
