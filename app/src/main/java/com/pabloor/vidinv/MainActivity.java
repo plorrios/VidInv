@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void check4User() {
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        user = preferences.getString("Username", null);
+        user = preferences.getString("Email", null);
         if (user != null) Log.d(TAG, "User is:" + user.toString());
     }
 
@@ -304,8 +304,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     Game current;
+                    Log.d("a",queryDocumentSnapshots.toString());
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
+                        Log.d("b","b");
+                        // Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
