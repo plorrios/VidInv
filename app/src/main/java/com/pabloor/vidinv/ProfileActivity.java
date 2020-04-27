@@ -74,16 +74,16 @@ public class ProfileActivity extends AppCompatActivity {
     public void OpenList(android.view.View view){
         switch (view.getId())
         {
-            case R.id.complete_Profile_Text:
+            case R.id.complete_Profile:
                 getList("completed");
                 break;
-            case R.id.dropped_Profile_Text:
+            case R.id.dropped_Profile:
                 getList("dropped");
                 break;
-            case R.id.pending_Profile_Text:
+            case R.id.pending_Profile:
                 getList("pending");
                 break;
-            case R.id.playing_Profile_Text:
+            case R.id.playing_Profile:
                 getList("playing");
                 break;
         }

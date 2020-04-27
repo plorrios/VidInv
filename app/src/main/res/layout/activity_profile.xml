@@ -42,17 +42,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/complete_Profile"
+            android:clickable="true"
+            android:onClick="OpenList">
 
             <TextView
-                android:id="@+id/complete_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/complete_list"
-                android:textSize="30sp"
-                android:clickable="true"
-                android:onClick="OpenList"/>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/complete_num"
@@ -67,17 +67,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/playing_Profile"
+            android:clickable="true"
+            android:onClick="OpenList">
 
             <TextView
-                android:id="@+id/playing_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/playing_list"
-                android:textSize="30sp"
-                android:clickable="true"
-                android:onClick="OpenList"/>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/playing_num"
@@ -102,17 +102,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/pending_Profile"
+            android:clickable="true"
+            android:onClick="OpenList">
 
             <TextView
-                android:id="@+id/pending_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/planned_play_list"
                 android:textSize="30sp"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:onClick="OpenList"/>
+                android:layout_gravity="center" />
 
             <TextView
                 android:id="@+id/pending_num"
@@ -127,17 +127,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/dropped_Profile"
+            android:clickable="true"
+            android:onClick="OpenList">
 
             <TextView
-                android:id="@+id/dropped_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dropped_list"
                 android:textSize="30sp"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:onClick="OpenList"/>
+                android:layout_gravity="center" />
 
             <TextView
                 android:id="@+id/dropped_num"
