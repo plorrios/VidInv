@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openProfile(MenuItem item) {
         Intent intent = new Intent (MainActivity.this, ProfileActivity.class);
-        intent.putExtra("email", email);
+        intent.putExtra("email", user);
         startActivity(intent);
     }
 }
