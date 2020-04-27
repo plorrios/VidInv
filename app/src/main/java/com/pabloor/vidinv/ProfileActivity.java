@@ -50,10 +50,10 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         nickname = findViewById(R.id.usernameText);
-        completeNum = findViewById(R.id.complete_num);
+        /*completeNum = findViewById(R.id.complete_num);
         pendingNum = findViewById(R.id.pending_num);
         droppedNum = findViewById(R.id.dropped_num);
-        playingNum = findViewById(R.id.playing_num);
+        playingNum = findViewById(R.id.playing_num);*/
 
         email = getIntent().getStringExtra("email");
 
@@ -62,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://vidinv-8c068.appspot.com");
-        StorageReference referenceimage = gsReference.child("plorrios@gmail.com");
+        StorageReference referenceimage = gsReference.child(email);
         //StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://vidinv-8c068.appspot.com/Captura.PNG");
         referenceimage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             nickname.setText(document.getString("nickname"));
-
+/*
                             if (document.getLong("completed") != null) {
                                 completeNum.setText(document.getLong("completed").toString());
                             } else { completeNum.setText("0"); }
@@ -102,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
                             if (document.getLong("playing") != null) {
                                 playingNum.setText(document.getLong("playing").toString());
                             } else { playingNum.setText("0"); }
+                            */
                         }
                     }
                 });
@@ -123,7 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == PICK_IMAGE && data != null) {
             ImageUri = data.getData();
             upload();
         }
