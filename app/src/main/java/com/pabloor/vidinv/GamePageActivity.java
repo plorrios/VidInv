@@ -364,6 +364,8 @@ public class GamePageActivity extends AppCompatActivity {
                     }
                 });
 
+        Log.d("","");
+
         exchange.put(old, value[0]-1);
         exchange.put(aim, value[1]+1);
 

@@ -62,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://vidinv-8c068.appspot.com");
-        StorageReference referenceimage = gsReference.child("plorrios@gmail.com");
+        StorageReference referenceimage = gsReference.child(email);
         //StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://vidinv-8c068.appspot.com/Captura.PNG");
         referenceimage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -123,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == PICK_IMAGE && data != null) {
             ImageUri = data.getData();
             upload();
         }
