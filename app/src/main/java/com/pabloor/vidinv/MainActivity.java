@@ -115,39 +115,6 @@ public class MainActivity extends AppCompatActivity {
         pendingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
         completefragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
 
-
-        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
-        final EditText input = (EditText) dialogView.findViewById(R.id.input);
-        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
-                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
-                create();
-
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("textoInput",input.getText().toString());
-                        // TODO Do something
-                        if (input.getText().length()!=0) {
-                            Log.d("textoInput",input.getText().toString());
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                            preferences.edit().putString("Username", input.getText().toString()).apply();
-                            dialog.dismiss();
-                        }else{                              }
-                        //Dismiss once everything is OK.
-
-                    }
-                });
-            }
-        });
-        dialog.show();
-
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
         SignInGoogle();
