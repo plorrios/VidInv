@@ -96,7 +96,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (preferences.getString("MainVisualization","a").equals(getString(R.string.Square))) {
+            setContentView(R.layout.activity_main);
+        }else{
+            setContentView(R.layout.activity_main_alternative);
+        }
         getSupportActionBar().hide();
 
         bottom = findViewById(R.id.bottomAppBar);

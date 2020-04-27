@@ -4,4 +4,13 @@
         android:key="Username"
         android:title="@string/username_title"
         android:summary="@string/username_desc"/>
+    <ListPreference
+        android:key="MainVisualization"
+        android:title="@string/Main"
+        android:summary="@string/Visualization"
+        android:defaultValue="@string/Square"
+        android:entryValues="@array/pref_values"
+        android:entries="@array/pref_options"
+        />
+
 </PreferenceScreen>
