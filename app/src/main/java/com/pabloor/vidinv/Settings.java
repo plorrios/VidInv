@@ -11,7 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class Settings extends AppCompatActivity {
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +33,21 @@ public class Settings extends AppCompatActivity {
                             "Restart the application to see the changes ",
                             Toast.LENGTH_SHORT).show();
                 }
+                else if(key.equals("Username")) {
+                    Toast.makeText(getApplicationContext(), "Username successfully changed", Toast.LENGTH_LONG).show();
+                    db.collection("users")
+                            .document(prefs.getString("Email", null))
+                            .update("nickname", prefs.getString("Username", null));
+                }
             }
         };
+
         preferences.registerOnSharedPreferenceChangeListener(listener);
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings_layout, new SettingsFragment())
                 .commit();
-
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
