@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ProfileActivity">
+    tools:context=".ProfileActivity" >
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:onClick="changeProfilePic"/>
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
@@ -39,13 +51,13 @@
         android:weightSum="1">
 
         <LinearLayout
+            android:id="@+id/complete_Profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:id="@+id/complete_Profile"
             android:clickable="true"
-            android:onClick="OpenList">
+            android:onClick="OpenList"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,13 +76,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/playing_Profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:id="@+id/playing_Profile"
             android:clickable="true"
-            android:onClick="OpenList">
+            android:onClick="OpenList"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,53 +111,53 @@
         android:weightSum="1">
 
         <LinearLayout
+            android:id="@+id/pending_Profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:id="@+id/pending_Profile"
             android:clickable="true"
-            android:onClick="OpenList">
+            android:onClick="OpenList"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/planned_play_list"
-                android:textSize="30sp"
-                android:layout_gravity="center" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/pending_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="58"
-                android:textSize="24sp"
-                android:layout_gravity="center"/>
+                android:textSize="24sp" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/dropped_Profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:id="@+id/dropped_Profile"
             android:clickable="true"
-            android:onClick="OpenList">
+            android:onClick="OpenList"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/dropped_list"
-                android:textSize="30sp"
-                android:layout_gravity="center" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/dropped_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="1"
-                android:textSize="24sp"
-                android:layout_gravity="center" />
+                android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -157,3 +169,4 @@
         android:layout_marginTop="150dp"
         android:text="Open lists" />
 </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
