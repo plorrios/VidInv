@@ -64,6 +64,7 @@ public class Searchable extends Fragment {
     boolean isSearch;
     boolean searchingGame;
     ArrayList<User> userList;
+    RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +116,7 @@ public class Searchable extends Fragment {
 
         //RecyclerView recyclerView = findViewById(R.id.SearchableLayout);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        RecyclerView recyclerView = rootView.findViewById(R.id.SearchableLayout);
+        recyclerView = rootView.findViewById(R.id.SearchableLayout);
         if (preferences.getString("MainVisualization","Vertical").equals(getString(R.string.Square)) || isSearch) {
             linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -162,17 +163,23 @@ public class Searchable extends Fragment {
         games.toArray(gamesArray);
         gamesList = new GamesList(gamesArray);
         AddGames(gamesList);
-        if (games.size()<40 * page){
-            noMoreGames=true;
+        if (games.size() < 40 * page) {
+            noMoreGames = true;
         }
-        adapter2.notifyDataSetChanged();
+        adapter2 = new MainGamesListAdapter(getActivity(), gamesList, new MainGamesListAdapter.InterfaceClick() {
+            @Override
+            public void OnInterfaceClick(int position) {
+                Intent intent = new Intent(getActivity(), GamePageActivity.class);
+                intent.putExtra("GAME_ID", adapter2.GetGame(position).getId());
+                startActivity(intent);
+            }
+        });
+        recyclerView.setAdapter(adapter2);
     }
 
     public void startSearch(String s){
-
         query = s;
         startTask(this);
-
     }
 
     private void startTask(Searchable v) {
@@ -206,14 +213,13 @@ public class Searchable extends Fragment {
 
     public void AddGames(final GamesList gamesL)
     {
-        if (gamesL.GetGames().length==0)
+        if (gamesL.GetGames().length == 0)
         {
             if (isSearch)
             {
                 ((SearchActivity)getActivity()).finishedTask();
                 Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
             }
-
             return;
         }
 
