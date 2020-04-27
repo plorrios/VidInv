@@ -50,10 +50,10 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         nickname = findViewById(R.id.usernameText);
-        completeNum = findViewById(R.id.complete_num);
+        /*completeNum = findViewById(R.id.complete_num);
         pendingNum = findViewById(R.id.pending_num);
         droppedNum = findViewById(R.id.dropped_num);
-        playingNum = findViewById(R.id.playing_num);
+        playingNum = findViewById(R.id.playing_num);*/
 
         email = getIntent().getStringExtra("email");
 
@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             nickname.setText(document.getString("nickname"));
-
+/*
                             if (document.getLong("completed") != null) {
                                 completeNum.setText(document.getLong("completed").toString());
                             } else { completeNum.setText("0"); }
@@ -102,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
                             if (document.getLong("playing") != null) {
                                 playingNum.setText(document.getLong("playing").toString());
                             } else { playingNum.setText("0"); }
+                            */
                         }
                     }
                 });
