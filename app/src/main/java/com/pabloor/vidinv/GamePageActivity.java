@@ -162,9 +162,10 @@ public class GamePageActivity extends AppCompatActivity {
         String text = html.replaceAll("(\\n)", "");
         String text2 = text.replaceAll("(</p>)", "\n");
         String text1 = text2.replaceAll("(<.*?>)", " ");
+        String textfinal = text1.replaceAll("(&#39;)","'");
 
-        Log.d("Text after",text1);
-        return text1;
+        Log.d("Text after",textfinal);
+        return textfinal;
     }
 
     private String dataFormat(String oldDate) throws ParseException {
