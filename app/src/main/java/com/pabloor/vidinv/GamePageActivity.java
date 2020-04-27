@@ -308,8 +308,10 @@ public class GamePageActivity extends AppCompatActivity {
                 .document(currentGame.getId() + "")
                 .set(savedGame);
 
+
+
         Toast.makeText(this,
-                "Game saved at " + selectList + "list",
+                "Game saved at " + selectList + " list",
                 Toast.LENGTH_LONG).show();
     }
 
