@@ -45,10 +45,18 @@ public class ProfileActivity extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             nickname.setText(document.getString("nickname"));
 
-                            completeNum.setText(document.getLong("completed").toString());
-                            pendingNum.setText(document.getLong("pending").toString());
-                            droppedNum.setText(document.getLong("dropped").toString());
-                            plannedNum.setText(document.getLong("planned").toString());
+                            if (document.getLong("completed") != null) {
+                                completeNum.setText(document.getLong("completed").toString());
+                            } else { completeNum.setText("0"); }
+                            if (document.getLong("pending") != null) {
+                                pendingNum.setText(document.getLong("pending").toString());
+                            } else { pendingNum.setText("0"); }
+                            if (document.getLong("dropped") != null) {
+                                droppedNum.setText(document.getLong("dropped").toString());
+                            } else { droppedNum.setText("0"); }
+                            if (document.getLong("planned") != null) {
+                                plannedNum.setText(document.getLong("planned").toString());
+                            } else { plannedNum.setText("0"); }
                         }
                     }
                 });

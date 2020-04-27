@@ -321,4 +321,6 @@ public class Searchable extends Fragment {
         adapter.clear();
     }
 
+    public void update(){adapter2.notifyDataSetChanged();};
+
 }

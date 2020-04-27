@@ -320,6 +320,12 @@ public class MainActivity extends AppCompatActivity {
                     if (completed != null){completefragment.fillWithList(completed);}
                     Log.d(TAG, "Pending:" + pending.toString());
                     if (pending != null){pendingFragment.fillWithList(pending);}
+
+                    playingFragment.update();
+                    droppedfragment.update();
+                    completefragment.update();
+                    pendingFragment.update();
+                    Log.d("a", "Pending:");
                 }
             });
         }
