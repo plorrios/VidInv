@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (preferences.getString("MainVisualization","a").equals(getString(R.string.Square))) {
+        if (preferences.getString("MainVisualization","Vertical").equals(getString(R.string.Square))) {
             setContentView(R.layout.activity_main);
         }else{
             setContentView(R.layout.activity_main_alternative);

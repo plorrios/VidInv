@@ -67,7 +67,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         }
     }
 
-    public void addUser(User user){ userList.add(user); }
+    public void addUser(User user){ userList.add(user); notifyItemInserted(getItemCount());}
 
     public User GetUser(int position){
         return userList.get(position);
