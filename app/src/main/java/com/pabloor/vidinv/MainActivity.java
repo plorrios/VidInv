@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateList();
 
-        dummyBD();
+        //dummyBD();
         /*linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
