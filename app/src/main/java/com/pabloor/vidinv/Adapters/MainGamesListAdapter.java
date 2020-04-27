@@ -122,7 +122,7 @@ public class MainGamesListAdapter extends RecyclerView.Adapter<MainGamesListAdap
         if (games.get(position)==null){}
 
         if (holder instanceof CustomViewHolder && games.get(position)!=null) {
-            Picasso.get().load(games.get(position).getBackgroundImage()).resize(160,90).into(holder.image);
+            Picasso.get().load(games.get(position).getBackgroundImage()).resize(200,112).into(holder.image);
             //holder.name.setText(games.get(position).getName());
 
             RequestOptions options = new RequestOptions();
