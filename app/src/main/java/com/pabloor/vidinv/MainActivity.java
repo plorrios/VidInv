@@ -53,7 +53,9 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pabloor.vidinv.Adapters.ListOfListsAdapter;
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String user;
+    String email;
 
     private LinearLayoutManager linearLayoutManager;
 
@@ -111,39 +114,6 @@ public class MainActivity extends AppCompatActivity {
         playingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment2);
         pendingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
         completefragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
-
-
-        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
-        final EditText input = (EditText) dialogView.findViewById(R.id.input);
-        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
-                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
-                create();
-
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("textoInput",input.getText().toString());
-                        // TODO Do something
-                        if (input.getText().length()!=0) {
-                            Log.d("textoInput",input.getText().toString());
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                            preferences.edit().putString("Username", input.getText().toString()).apply();
-                            dialog.dismiss();
-                        }else{                              }
-                        //Dismiss once everything is OK.
-
-                    }
-                });
-            }
-        });
-        dialog.show();
 
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
@@ -247,14 +217,26 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             preferences.edit().putString("Email",user.getEmail()).apply();
+                            email = preferences.getString("Email", null);
 
-
-                            preferences.edit().putString("Username",user.getDisplayName()).apply();
-
-
-
-                            //Log.d("Email",preferences.getString("Email","nul"));
-                            //updateUI(user);
+                            db.collection("users")
+                                    .document(preferences.getString("Email", null))
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    if (document.get("nickname") == null) {
+                                                        showNicknameInput();
+                                                    }
+                                                } else {
+                                                    showNicknameInput();
+                                                }
+                                            }
+                                        }
+                                    });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -262,8 +244,6 @@ public class MainActivity extends AppCompatActivity {
                             //Snackbar.make(findViewById(R.id.activity_main), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
-
-                        // ...
                     }
                 });
     }
@@ -395,5 +375,51 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, R.string.empty_list, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void showNicknameInput() {
+        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
+        final EditText input = (EditText) dialogView.findViewById(R.id.input);
+        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
+                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
+                create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("textoInput",input.getText().toString());
+                        // TODO Do something
+                        if (input.getText().length()!=0) {
+                            Log.d("textoInput",input.getText().toString());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            preferences.edit().putString("Username", input.getText().toString()).apply();
+                            dialog.dismiss();
+                            addNicknameToDB(input.getText().toString());
+                        }else{                              }
+                        //Dismiss once everything is OK.
+                    }
+                });
+            }
+        });
+        dialog.show();
+    }
+
+    private void addNicknameToDB(String nickname) {
+        Map<String, Object> newUser = new HashMap<>();
+        newUser.put("nickname", nickname);
+        newUser.put("completed", 0);
+        newUser.put("pending", 0);
+        newUser.put("playing", 0);
+        newUser.put("dropped", 0);
+
+        db.collection("users").document(email)
+                .set(newUser);
     }
 }
