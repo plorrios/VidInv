@@ -127,7 +127,7 @@ public class Searchable extends Fragment {
         //RecyclerView recyclerView = findViewById(R.id.SearchableLayout);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         RecyclerView recyclerView = rootView.findViewById(R.id.SearchableLayout);
-        if (preferences.getString("MainVisualization","Square").equals(getString(R.string.Square)) || isSearch) {
+        if (preferences.getString("MainVisualization","Vertical").equals(getString(R.string.Square)) || isSearch) {
             linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
