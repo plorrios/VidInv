@@ -45,11 +45,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/complete_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/complete_list"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:clickable="true"
+                android:onClick="OpenList"/>
 
             <TextView
                 android:id="@+id/complete_num"
@@ -67,11 +70,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/playing_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/playing_list"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:clickable="true"
+                android:onClick="OpenList"/>
 
             <TextView
                 android:id="@+id/playing_num"
@@ -99,11 +105,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/pending_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/planned_play_list"
                 android:textSize="30sp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:onClick="OpenList"/>
 
             <TextView
                 android:id="@+id/pending_num"
@@ -121,11 +130,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/dropped_Profile_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dropped_list"
                 android:textSize="30sp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:onClick="OpenList"/>
 
             <TextView
                 android:id="@+id/dropped_num"
@@ -133,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:text="1"
                 android:textSize="24sp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
         </LinearLayout>
     </LinearLayout>
 
