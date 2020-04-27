@@ -277,7 +277,7 @@ public class Searchable extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String search = s;
         Log.d("search",s);
-        db.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection(" ").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {

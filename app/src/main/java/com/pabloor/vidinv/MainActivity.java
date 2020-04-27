@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openGame(View view) {
-        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        Intent intent = new Intent(MainActivity.this, TestActivity.class);
         startActivity(intent);
     }
 
