@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -100,18 +101,6 @@ public class Searchable extends Fragment {
                         startActivity(intent);
                     }
                 });
-            }else{
-                adapter3 = new UserAdapter(userList, new UserAdapter.IClickListener() {
-                    @Override
-                    public void onClickListener(int position) {
-                        if (adapter.GetGame(position) == null) {
-                            Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
-                        }
-                        Intent intent = new Intent(getActivity(), GamePageActivity.class);
-                        intent.putExtra("UserEmail", adapter3.GetUser(position).getUser_name());
-                        //startActivity(intent);
-                    }
-                });
             }
         }else{
             adapter2 = new MainGamesListAdapter(getActivity(), gamesList, new MainGamesListAdapter.InterfaceClick() {
@@ -139,8 +128,6 @@ public class Searchable extends Fragment {
 
         if (isSearch && searchingGame) {
             recyclerView.setAdapter(adapter);
-        }else if (isSearch && searchingGame){
-            recyclerView.setAdapter(adapter3);
         }else{recyclerView.setAdapter(adapter2); }
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -171,7 +158,6 @@ public class Searchable extends Fragment {
     }
 
     public void fillWithList(ArrayList<Game> games){
-
         Game[] gamesArray = new Game[games.size()];
         games.toArray(gamesArray);
         gamesList = new GamesList(gamesArray);
@@ -179,7 +165,7 @@ public class Searchable extends Fragment {
         if (games.size()<40 * page){
             noMoreGames=true;
         }
-
+        adapter2.notifyDataSetChanged();
     }
 
     public void startSearch(String s){
@@ -233,7 +219,6 @@ public class Searchable extends Fragment {
 
         if (!noMoreGames) {
             if (page >= 2) {
-
                 if (isSearch) {
                     adapter.removeTopGame();
                     page = page + 1;
@@ -244,7 +229,8 @@ public class Searchable extends Fragment {
                     adapter2.removeTopGame();
                     page = page + 1;
                     adapter2.addGames(gamesL);
-                    adapter2.notifyItemRangeInserted(1 + (40 * page), 40 * page);
+                    //adapter2.notifyItemRangeInserted(1 + (40 * page), 40 * page);
+                    //adapter2.notifyDataSetChanged();
                     isLoading = false;
                 }
             } else {
@@ -272,26 +258,63 @@ public class Searchable extends Fragment {
     }
 
     public void userSearch(String s){
-        if (userList == null){userList = new ArrayList<User>();}
+
+        if (userList == null){ userList = new ArrayList<User>(); }
+        if (!userList.isEmpty()) {
+            userList.clear();
+            adapter3.notifyDataSetChanged();
+        }
         isSearch = true;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String search = s;
         Log.d("search",s);
-        db.collection(" ").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+
+        db.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    Log.d("ID",documentSnapshot.getId());
-                    Log.d("check",String.valueOf(documentSnapshot.getId().contains(search)));
-                    if (documentSnapshot.getId().contains(search)) {
+                    Log.d("ID",documentSnapshot.getString("nickname"));
+                    Log.d("check",String.valueOf(documentSnapshot.getString("nickname").contains(search)));
+                    if (documentSnapshot.getString("nickname").contains(search)) {
                         Log.d("Usuario",documentSnapshot.getString("nickname"));
                         User user = new User(documentSnapshot.getId(), documentSnapshot.getString("nickname"));
                         userList.add(user);
+                        for (User user1 : userList) {
+                            Log.d("usuario insertado",user1.getUser_name());
+                        }
                     }
+                }
+
+                for (User user : userList) {
+                    Log.d("usuario insertado123",user.getUser_name());
+                }
+                if (adapter3 == null) {
+                    adapter3 = new UserAdapter(userList, new UserAdapter.IClickListener() {
+                        @Override
+                        public void onClickListener(int position) {
+                            if (adapter3.GetUser(position) == null) {
+                                Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+                            }
+
+                            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                            intent.putExtra("email", adapter3.GetUser(position).getUser_name());
+                            startActivity(intent);
+                        }
+                    });
+
+                    RecyclerView recyclerView = rootView.findViewById(R.id.SearchableLayout);
+                    linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+                    recyclerView.setAdapter(adapter3);
+                }else{
+                    adapter3.notifyDataSetChanged();
                 }
 
             }
         });
+
     }
 
     public void empty(){

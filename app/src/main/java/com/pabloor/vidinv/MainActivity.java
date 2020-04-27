@@ -18,6 +18,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (preferences.getString("MainVisualization","Vertical").equals(getString(R.string.Square))) {
             setContentView(R.layout.activity_main);
-        }else{
+        } else {
             setContentView(R.layout.activity_main_alternative);
         }
         getSupportActionBar().hide();
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateList();
 
-        dummyBD();
+        //dummyBD();
         /*linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -289,9 +290,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     Game current;
-                    Log.d("a",queryDocumentSnapshots.toString());
+                    Log.d(TAG,queryDocumentSnapshots.toString());
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Log.d("b","b");
                         // Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
@@ -337,6 +337,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         dummyBD();
         Log.d(TAG, "MAINACTIVITY RETURNED");
+    }
+
+    protected void reDrawLists() {
+        //playingFragment
     }
 
     public void openGame(View view) {
@@ -421,5 +425,11 @@ public class MainActivity extends AppCompatActivity {
 
         db.collection("users").document(email)
                 .set(newUser);
+    }
+
+    public void openProfile(MenuItem item) {
+        Intent intent = new Intent (MainActivity.this, ProfileActivity.class);
+        intent.putExtra("email", email);
+        startActivity(intent);
     }
 }

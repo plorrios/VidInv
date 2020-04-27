@@ -43,7 +43,7 @@ public class GameListActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        username = preferences.getString("Username", null);
+        username = preferences.getString("Email", null);
 
         mainList = (ArrayList<Game>) getIntent().getSerializableExtra("NAME_LIST");
         Log.d("GameListActivity", mainList.toString());
