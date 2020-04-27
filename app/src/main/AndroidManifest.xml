@@ -43,6 +43,10 @@
                 android:value=".Searchable" />
         </activity>
         <activity android:name=".GameListActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
