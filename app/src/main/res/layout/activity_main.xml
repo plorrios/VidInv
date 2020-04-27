@@ -28,7 +28,8 @@
         app:layout_anchor="@+id/relativeLayout"
         app:layout_anchorGravity="bottom|center"
         app:fabCradleVerticalOffset="0dp"
-        app:navigationIcon="@drawable/ic_settings"/>
+        app:navigationIcon="@drawable/ic_settings"
+        app:menu="@menu/menu"/>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"

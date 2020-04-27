@@ -18,6 +18,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (preferences.getString("MainVisualization","Vertical").equals(getString(R.string.Square))) {
             setContentView(R.layout.activity_main);
-        }else{
+        } else {
             setContentView(R.layout.activity_main_alternative);
         }
         getSupportActionBar().hide();
@@ -424,5 +425,11 @@ public class MainActivity extends AppCompatActivity {
 
         db.collection("users").document(email)
                 .set(newUser);
+    }
+
+    public void openProfile(MenuItem item) {
+        Intent intent = new Intent (MainActivity.this, ProfileActivity.class);
+        intent.putExtra("email", email);
+        startActivity(intent);
     }
 }
