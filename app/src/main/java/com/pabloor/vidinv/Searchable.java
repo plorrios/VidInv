@@ -25,10 +25,16 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pabloor.vidinv.Adapters.GamesListAdapter;
 import com.pabloor.vidinv.Adapters.MainGamesListAdapter;
+import com.pabloor.vidinv.Adapters.UserAdapter;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.Objects.GamesList;
+import com.pabloor.vidinv.Objects.User;
 import com.pabloor.vidinv.tasks.GetGameListThread;
 import com.pabloor.vidinv.tasks.GetGameThread;
 
@@ -43,6 +49,7 @@ public class Searchable extends Fragment {
     Searchable s = this;
     GamesListAdapter adapter;
     MainGamesListAdapter adapter2;
+    UserAdapter adapter3;
     GetGameListThread task;
     GamesList gamesList;
     Handler handler;
@@ -54,6 +61,8 @@ public class Searchable extends Fragment {
     View rootView;
     boolean isLoading = false;
     boolean isSearch;
+    boolean searchingGame;
+    ArrayList<User> userList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,10 @@ public class Searchable extends Fragment {
         page = 1;
 
         isSearch = getActivity() instanceof SearchActivity;
+
+        if (isSearch) {
+            searchingGame = ((SearchActivity) getActivity()).gamessearch;
+        }
 
         Game[] games = new Game[0];
         gamesList = new GamesList(games);
@@ -75,17 +88,31 @@ public class Searchable extends Fragment {
 
 
         if (isSearch){
-        adapter = new GamesListAdapter(getActivity(), gamesList, new GamesListAdapter.InterfaceClick() {
-            @Override
-            public void OnInterfaceClick(int position) {
-                if (adapter.GetGame(position) == null) {
-                    Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
-                }
+            if (searchingGame) {
+                adapter = new GamesListAdapter(getActivity(), gamesList, new GamesListAdapter.InterfaceClick() {
+                    @Override
+                    public void OnInterfaceClick(int position) {
+                        if (adapter.GetGame(position) == null) {
+                            Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
+                        }
                         Intent intent = new Intent(getActivity(), GamePageActivity.class);
                         intent.putExtra("GAME_ID", adapter.GetGame(position).getId());
                         startActivity(intent);
+                    }
+                });
+            }else{
+                adapter3 = new UserAdapter(userList, new UserAdapter.IClickListener() {
+                    @Override
+                    public void onClickListener(int position) {
+                        if (adapter.GetGame(position) == null) {
+                            Toast.makeText(getActivity(), "Game not found", Toast.LENGTH_SHORT).show();
+                        }
+                        Intent intent = new Intent(getActivity(), GamePageActivity.class);
+                        intent.putExtra("UserEmail", adapter3.GetUser(position).getUser_name());
+                        //startActivity(intent);
+                    }
+                });
             }
-        });
         }else{
             adapter2 = new MainGamesListAdapter(getActivity(), gamesList, new MainGamesListAdapter.InterfaceClick() {
                 @Override
@@ -110,9 +137,11 @@ public class Searchable extends Fragment {
             //recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.HORIZONTAL));
         }
 
-        if (isSearch) {
+        if (isSearch && searchingGame) {
             recyclerView.setAdapter(adapter);
-        }else{ recyclerView.setAdapter(adapter2); }
+        }else if (isSearch && searchingGame){
+            recyclerView.setAdapter(adapter3);
+        }else{recyclerView.setAdapter(adapter2); }
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -124,8 +153,10 @@ public class Searchable extends Fragment {
 
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !noMoreGames &&  !isLoading) {
 
-                        if (isSearch) {
+                        if (isSearch && searchingGame) {
                             adapter.addFakeTop();
+                        }else if (isSearch && searchingGame){
+
                         }else{ adapter2.addFakeTop(); }
 
                         page = page + 1;
@@ -238,6 +269,33 @@ public class Searchable extends Fragment {
                 }
             }
         }
+    }
+
+    public void userSearch(String s){
+        if (userList == null){userList = new ArrayList<User>();}
+        isSearch = true;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final String search = s;
+        Log.d("search",s);
+        db.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Log.d("ID",documentSnapshot.getId());
+                    Log.d("check",String.valueOf(documentSnapshot.getId().contains(search)));
+                    if (documentSnapshot.getId().contains(search)) {
+                        Log.d("Usuario",documentSnapshot.getString("nickname"));
+                        User user = new User(documentSnapshot.getId(), documentSnapshot.getString("nickname"));
+                        userList.add(user);
+                    }
+                }
+
+            }
+        });
+    }
+
+    public void empty(){
+        adapter.clear();
     }
 
 }

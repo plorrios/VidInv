@@ -8,16 +8,20 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
+import android.widget.ToggleButton;
 
 public class SearchActivity extends AppCompatActivity {
 
     Searchable fragment;
     ProgressBar progressBar = null;
+    public boolean gamessearch = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +37,18 @@ public class SearchActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
+        ((RadioGroup) findViewById(R.id.toggleGroup)).setOnCheckedChangeListener(ToggleListener);
     }
+
+    static final RadioGroup.OnCheckedChangeListener ToggleListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
+            for (int j = 0; j < radioGroup.getChildCount(); j++) {
+                final ToggleButton view = (ToggleButton) radioGroup.getChildAt(j);
+                view.setChecked(view.getId() == i);
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,8 +62,12 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String s) {
                 //Searchable searchable = (Searchable) getSupportFragmentManager().findFragmentByTag("com.pabloor.vidinv.Searchable");
                 //searchable.startSearch(s);
-                fragment.startSearch(s);
-                progressBar.setVisibility(View.VISIBLE);
+                if (gamessearch) {
+                    fragment.startSearch(s);
+                    progressBar.setVisibility(View.VISIBLE);
+                } else{
+                    fragment.userSearch(s);
+                }
                 return false;
             }
 
@@ -69,6 +88,27 @@ public class SearchActivity extends AppCompatActivity {
     public void finishedTask()
     {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    public void onToggle(android.view.View view){
+        ((RadioGroup)view.getParent()).check(view.getId());
+        int pos = view.getId();
+        clearSearch();
+        switch (pos) {
+            case R.id.btn_Games_search:
+                Log.d("button","Games");
+                gamessearch = true;
+                break;
+            case R.id.btn_Users_search:
+                Log.d("button","Users");
+                gamessearch = false;
+                break;
+        }
+
+    }
+
+    public void clearSearch(){
+        fragment.empty();
     }
 
 }
