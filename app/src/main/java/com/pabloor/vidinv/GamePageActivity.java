@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -157,8 +158,14 @@ public class GamePageActivity extends AppCompatActivity {
     }
 
     private String htmlToText(String html) {
-        String text = html.replaceAll("\\<.*?\\>", "");
-        return text;
+        Log.d("Text before",html);
+        String text = html.replaceAll("(\\n)", "");
+        String text2 = text.replaceAll("(</p>)", "\n");
+        String text1 = text2.replaceAll("(<.*?>)", " ");
+        String textfinal = text1.replaceAll("(&#39;)","'");
+
+        Log.d("Text after",textfinal);
+        return textfinal;
     }
 
     private String dataFormat(String oldDate) throws ParseException {

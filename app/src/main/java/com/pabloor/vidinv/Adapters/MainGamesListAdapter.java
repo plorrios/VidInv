@@ -1,13 +1,10 @@
 package com.pabloor.vidinv.Adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,15 +21,11 @@ import com.pabloor.vidinv.Objects.GamesList;
 import com.pabloor.vidinv.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.CustomViewHolder>{
+public class MainGamesListAdapter extends RecyclerView.Adapter<MainGamesListAdapter.CustomViewHolder>{
 
     InterfaceClick interfaceClick;
     GamesList gamesList;
@@ -43,7 +36,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
     private final int VIEW_TYPE_LOADING = 1;
 
 
-    public GamesListAdapter(Context context , GamesList gamesL, InterfaceClick ParameterInterfaceClick){
+    public MainGamesListAdapter(Context context , GamesList gamesL, InterfaceClick ParameterInterfaceClick){
         gamesList = gamesL;
         games = new ArrayList<>();
         games.addAll(Arrays.asList(gamesL.GetGames()));
@@ -88,10 +81,10 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
 
     @NonNull
     @Override
-    public GamesListAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MainGamesListAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d("",Integer.toString(viewType));
         if (viewType == VIEW_TYPE_ITEM) {
-            View FirstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_game,parent,false);
+            View FirstView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_game2,parent,false);
             final CustomViewHolder viewHolder = new CustomViewHolder(FirstView);
             FirstView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -118,19 +111,19 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
 
         ViewHolder(View view) {
             super(view);
-            imageView = view.findViewById(R.id.GameSearchedImage);
+            imageView = view.findViewById(R.id.GameSearchedImage2);
             textView = view.findViewById(R.id.GameSearchedTitle);
         }
     }
 
     @Override
-    public void onBindViewHolder(GamesListAdapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(MainGamesListAdapter.CustomViewHolder holder, int position) {
 
         if (games.get(position)==null){}
 
         if (holder instanceof CustomViewHolder && games.get(position)!=null) {
-            Picasso.get().load(games.get(position).getBackgroundImage()).resize(107,60).into(holder.image);
-            holder.name.setText(games.get(position).getName());
+            Picasso.get().load(games.get(position).getBackgroundImage()).resize(200,112).into(holder.image);
+            //holder.name.setText(games.get(position).getName());
 
             RequestOptions options = new RequestOptions();
             Glide
@@ -165,8 +158,8 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.GameSearchedImage);
-            name = (TextView) itemView.findViewById(R.id.GameSearchedTitle);
+            image = (ImageView) itemView.findViewById(R.id.GameSearchedImage2);
+            //name = (TextView) itemView.findViewById(R.id.GameSearchedTitle);
         }
     }
 
@@ -184,11 +177,6 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.Cust
     private void showLoadingView(LoadingViewHolder viewHolder, int position) {
         //ProgressBar would be displayed
 
-    }
-
-    public void clear(){
-        games.clear();
-        notifyDataSetChanged();
     }
 
 }

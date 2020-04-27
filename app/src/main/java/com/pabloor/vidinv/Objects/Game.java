@@ -63,10 +63,10 @@ public class Game implements Serializable {
 
     private int list;
 
-    public Game(int id, @NonNull String name, @NonNull String description) {
+    public Game(int id, @NonNull String name, @NonNull String Image) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.background_image = Image;
     }
 
     public Game() {

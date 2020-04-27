@@ -54,7 +54,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.gameItem.setText(gameList.get(position).getName());
-        Picasso.get().load(gameList.get(position).getDescription()).into(holder.gameImage);
+        Picasso.get().load(gameList.get(position).getBackgroundImage()).into(holder.gameImage);
     }
 
     @Override

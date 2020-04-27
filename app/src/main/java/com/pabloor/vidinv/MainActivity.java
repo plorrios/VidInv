@@ -73,13 +73,18 @@ public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
 
+    Searchable droppedfragment;
+    Searchable playingFragment;
+    Searchable pendingFragment;
+    Searchable completefragment;
+
     //Lista de los nombres de las listas
     List<String> listOfLists;
     //Lista local de las listas de un determinado usuario
-    List<Game> pending;
-    List<Game> completed;
-    List<Game> dropped;
-    List<Game> playing;
+    ArrayList<Game> pending;
+    ArrayList<Game> completed;
+    ArrayList<Game> dropped;
+    ArrayList<Game> playing;
 
     BottomAppBar bottom;
     FloatingActionButton fab;
@@ -94,11 +99,54 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (preferences.getString("MainVisualization","a").equals(getString(R.string.Square))) {
+            setContentView(R.layout.activity_main);
+        }else{
+            setContentView(R.layout.activity_main_alternative);
+        }
         getSupportActionBar().hide();
 
         bottom = findViewById(R.id.bottomAppBar);
         fab = findViewById(R.id.newListButton);
+
+        droppedfragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment1);
+        playingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment2);
+        pendingFragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment3);
+        completefragment = (Searchable) getSupportFragmentManager().findFragmentById(R.id.my_fragment4);
+
+
+        View dialogView = getLayoutInflater().inflate(R.layout.username_alert_dialog, null);
+        final EditText input = (EditText) dialogView.findViewById(R.id.input);
+        final AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle("Username").setCancelable(false).setView(dialogView).
+                setMessage("Introduce the username you want to use. This can be changed at any time.").setPositiveButton("OK",null).
+                create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("textoInput",input.getText().toString());
+                        // TODO Do something
+                        if (input.getText().length()!=0) {
+                            Log.d("textoInput",input.getText().toString());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            preferences.edit().putString("Username", input.getText().toString()).apply();
+                            dialog.dismiss();
+                        }else{                              }
+                        //Dismiss once everything is OK.
+
+                    }
+                });
+            }
+        });
+        dialog.show();
 
         //setSupportActionBar(bottom);
         mAuth = FirebaseAuth.getInstance();
@@ -116,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         instantiateList();
 
         dummyBD();
-        linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
+        /*linearLayoutManager = new LinearLayoutManager(this);    //linearLayoutManager.getOrientation()
         RecyclerView gameListview = (RecyclerView) findViewById(R.id.listLists);
         //gameListview.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameListview.setLayoutManager(new GridLayoutManager(this, 2));
@@ -133,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 click(position);
             }
         });
-        gameListview.setAdapter(adapter);
+        gameListview.setAdapter(adapter);*/
     }
 
     @Override
@@ -145,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void check4User() {
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        user = preferences.getString("Username", null);
+        user = preferences.getString("Email", null);
         if (user != null) Log.d(TAG, "User is:" + user.toString());
     }
 
@@ -274,8 +322,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     Game current;
+                    Log.d("a",queryDocumentSnapshots.toString());
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
+                        Log.d("b","b");
+                        // Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
                                 current = new Game(Integer.parseInt(documentSnapshot.getId()), documentSnapshot.getString("name"), documentSnapshot.getString("image"));
@@ -296,9 +346,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     Log.d(TAG, "Playing:" + playing.toString());
+                    if (playing != null){playingFragment.fillWithList(playing);}
                     Log.d(TAG, "Dropped:" + dropped.toString());
+                    if (dropped != null){droppedfragment.fillWithList(dropped);}
                     Log.d(TAG, "Completed:" + completed.toString());
+                    if (completed != null){completefragment.fillWithList(completed);}
                     Log.d(TAG, "Pending:" + pending.toString());
+                    if (pending != null){pendingFragment.fillWithList(pending);}
                 }
             });
         }
@@ -328,19 +382,21 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void click(int pos) {
+    public void click(android.view.View view) {
         List<Game> dummy = new ArrayList<Game>();
+        int pos = view.getId();
+        Log.d("position", Integer.toString(pos));
         switch (pos) {
-            case 0:
+            case R.id.playingButtonText:
                 dummy = playing;
                 break;
-            case 1:
+            case R.id.pendingButtonText:
                 dummy = pending;
                 break;
-            case 2:
+            case R.id.droppedButtonText:
                 dummy = dropped;
                 break;
-            case 3:
+            case R.id.completeButtonText:
                 dummy = completed;
                 break;
         }
