@@ -29,6 +29,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -285,6 +286,8 @@ public class GamePageActivity extends AppCompatActivity {
                         }
                     });
 
+        incrementAtEdit(oldListValue(), selectList);
+
         Toast.makeText(
                 this,
                 "Game updated, saved at " + selectList + "list",
@@ -308,12 +311,7 @@ public class GamePageActivity extends AppCompatActivity {
                 .document(currentGame.getId() + "")
                 .set(savedGame);
 
-        Map<String, Object> increment = new HashMap<>();
-
-        
-
-        /*db.collection("users").document(email).
-                update()*/
+        incrementGivenCont(selectList);
 
         Toast.makeText(this,
                 "Game saved at " + selectList + " list",
@@ -328,5 +326,63 @@ public class GamePageActivity extends AppCompatActivity {
     public void activateEditBtn() {
         addButton.setVisibility(View.INVISIBLE);
         editButton.setVisibility(View.VISIBLE);
+    }
+
+    public void incrementGivenCont(final String list) {
+        Map<String, Object> increment = new HashMap<>();
+        final int[] value = {0};
+
+        db.collection("users").document(email).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            value[0] = document.getLong(list).intValue();
+
+                        }
+                    }
+                });
+
+        increment.put(list, value[0]+1);
+        db.collection("users").document(email).update(increment);
+    }
+
+    private void incrementAtEdit(final String old, final String aim) {
+        Map<String, Object> exchange = new HashMap<>();
+        final int[] value = {0, 0};
+
+        db.collection("users").document(email).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            value[0] = document.getLong(old).intValue();
+                            value[1] = document.getLong(aim).intValue();
+                        }
+                    }
+                });
+
+        exchange.put(old, value[0]-1);
+        exchange.put(aim, value[1]+1);
+
+        db.collection("users").document(email).update(exchange);
+    }
+
+    private String oldListValue() {
+        final String[] oldValue = {""};
+        db.collection("users/" + email + "/games").document(currentGame.getId() + "")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    oldValue[0] = document.getString("list");
+                }
+            }
+        });
+
+        return oldValue[0];
     }
 }
