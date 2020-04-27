@@ -289,9 +289,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     Game current;
-                    Log.d("a",queryDocumentSnapshots.toString());
+                    Log.d(TAG,queryDocumentSnapshots.toString());
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Log.d("b","b");
                         // Log.d(TAG, documentSnapshot.getString("name") + ":" + documentSnapshot.getString("list"));
                         switch (documentSnapshot.getString("list")) {
                             case "playing":
@@ -337,6 +336,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         dummyBD();
         Log.d(TAG, "MAINACTIVITY RETURNED");
+    }
+
+    protected void reDrawLists() {
+        //playingFragment
     }
 
     public void openGame(View view) {

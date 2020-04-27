@@ -171,7 +171,6 @@ public class Searchable extends Fragment {
     }
 
     public void fillWithList(ArrayList<Game> games){
-
         Game[] gamesArray = new Game[games.size()];
         games.toArray(gamesArray);
         gamesList = new GamesList(gamesArray);
@@ -179,7 +178,7 @@ public class Searchable extends Fragment {
         if (games.size()<40 * page){
             noMoreGames=true;
         }
-
+        adapter2.notifyDataSetChanged();
     }
 
     public void startSearch(String s){
@@ -233,7 +232,6 @@ public class Searchable extends Fragment {
 
         if (!noMoreGames) {
             if (page >= 2) {
-
                 if (isSearch) {
                     adapter.removeTopGame();
                     page = page + 1;
@@ -244,7 +242,8 @@ public class Searchable extends Fragment {
                     adapter2.removeTopGame();
                     page = page + 1;
                     adapter2.addGames(gamesL);
-                    adapter2.notifyItemRangeInserted(1 + (40 * page), 40 * page);
+                    //adapter2.notifyItemRangeInserted(1 + (40 * page), 40 * page);
+                    //adapter2.notifyDataSetChanged();
                     isLoading = false;
                 }
             } else {
