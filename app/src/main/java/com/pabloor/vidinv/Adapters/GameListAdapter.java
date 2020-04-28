@@ -20,8 +20,10 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     private List<Game> gameList;
     private IClickListener shortClk;
     private ILongClickListener longClk;
+    private boolean allowRemoval;
 
-    public GameListAdapter (List<Game> games, IClickListener onClk, ILongClickListener onLongClk) {
+    public GameListAdapter (boolean isOwnProfile, List<Game> games, IClickListener onClk, ILongClickListener onLongClk) {
+        allowRemoval = isOwnProfile;
         gameList = games;
         shortClk = onClk;
         longClk = onLongClk;
@@ -43,7 +45,10 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
         firstView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                longClk.onClickLongListener(vh.getAdapterPosition());
+                if (allowRemoval)
+                {
+                    longClk.onClickLongListener(vh.getAdapterPosition());
+                }
                 return true;
             }
         });

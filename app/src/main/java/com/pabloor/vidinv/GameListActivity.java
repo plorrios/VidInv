@@ -35,12 +35,15 @@ public class GameListActivity extends AppCompatActivity {
     String username;
     GameListAdapter gadapt;
     RecyclerView gameList;
+    private boolean allowRemoval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_games);
         getSupportActionBar().hide();
+
+        allowRemoval = getIntent().getBooleanExtra("ownProfile",false);
 
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString("Email", null);
@@ -52,7 +55,7 @@ public class GameListActivity extends AppCompatActivity {
         gameList.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         gameList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        gadapt = new GameListAdapter(mainList,  new GameListAdapter.IClickListener() {
+        gadapt = new GameListAdapter(allowRemoval ,mainList, new GameListAdapter.IClickListener() {
             @Override
             public void onClickListener(int position) {
                 //showToast(position);

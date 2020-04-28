@@ -8,7 +8,7 @@
     tools:context=".ProfileActivity" >
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/changeImabeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/ic_menu_edit"

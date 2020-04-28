@@ -1,5 +1,7 @@
 package com.pabloor.vidinv.Adapters;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.pabloor.vidinv.Objects.Game;
 import com.pabloor.vidinv.Objects.User;
 import com.pabloor.vidinv.R;
@@ -46,9 +52,27 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
         holder.userItem.setText(userList.get(position).getNickname());
-        Picasso.get().load(userList.get(position).getImage()).into(holder.userImage);
+        Log.d("email",userList.get(position).getUser_name());
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference gsReference = storage.getReferenceFromUrl("gs://vidinv-8c068.appspot.com");
+        StorageReference referenceimage = gsReference.child(userList.get(position).getUser_name());
+        //StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://vidinv-8c068.appspot.com/Captura.PNG");
+        referenceimage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("succes",userList.get(position).getUser_name());
+                Picasso.get().load(uri.toString()).into(holder.userImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("error",userList.get(position).getUser_name());
+                // Handle any errors
+            }
+        });
+
     }
 
     @Override

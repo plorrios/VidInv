@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class ProfileActivity extends AppCompatActivity {
     String email;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ImageView imagen;
+    boolean enablePictureEdit;
+    ImageButton botonImagen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,13 @@ public class ProfileActivity extends AppCompatActivity {
         droppedNum = findViewById(R.id.dropped_num);
         playingNum = findViewById(R.id.playing_num);*/
 
+        enablePictureEdit = getIntent().getBooleanExtra("ownProfile",false);
         email = getIntent().getStringExtra("email");
+
+        botonImagen = findViewById(R.id.changeImabeButton);
+        if (!enablePictureEdit) {
+            botonImagen.setVisibility(View.INVISIBLE);
+        }
 
 
         imagen = findViewById(R.id.profile_image);
@@ -206,6 +215,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (!games.isEmpty()) {
             Intent intent = new Intent(ProfileActivity.this, GameListActivity.class);
             intent.putExtra("NAME_LIST", (ArrayList<Game>)games);
+            intent.putExtra("ownProfile",enablePictureEdit);
             startActivity(intent);
         }else {
             Toast.makeText(this, R.string.empty_list, Toast.LENGTH_SHORT).show();

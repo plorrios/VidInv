@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG + " - click()", dummy.toString());
             Intent intent = new Intent(getBaseContext(), GameListActivity.class);
             intent.putExtra("NAME_LIST", (ArrayList<Game>) dummy);
+            intent.putExtra("ownProfile",true);
             startActivity(intent);
         } else {
             Toast.makeText(this, R.string.empty_list, Toast.LENGTH_SHORT).show();
@@ -436,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
     public void openProfile(MenuItem item) {
         Intent intent = new Intent (MainActivity.this, ProfileActivity.class);
         intent.putExtra("email", user);
+        intent.putExtra("ownProfile",true);
         startActivity(intent);
     }
 }
